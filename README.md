@@ -140,7 +140,7 @@ Choose your preferred authentication method:
 ```javascript
 // Get your API Key from: https://app.mailsafepro.com/dashboard/api-keys
 {
-  "apiKey": "sk_live_abc123def456ghi789jkl012mno345pqr678"
+  "apiKey": "sk_live_YOUR_API_KEY_HERE"
 }
 ```
 
