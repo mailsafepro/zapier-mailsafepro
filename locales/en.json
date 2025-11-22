@@ -1,0 +1,145 @@
+{
+  "auth": {
+    "apiKey": {
+      "label": "API Key",
+      "helpText": "Your MailSafePro API Key (starts with sk_live_ or sk_test_). Get it from: https://app.mailsafepro.com/dashboard/api-keys"
+    },
+    "email": {
+      "label": "Email",
+      "helpText": "Your MailSafePro account email. Only needed if using JWT authentication."
+    },
+    "password": {
+      "label": "Password",
+      "helpText": "Your MailSafePro password. Only needed if using JWT authentication."
+    },
+    "test": {
+      "apiKeySuccess": "✅ API Key authentication successful",
+      "jwtSuccess": "✅ JWT authentication successful",
+      "testFailed": "Authentication test failed"
+    },
+    "errors": {
+      "noMethod": "Authentication method not provided. Use API Key OR Email+Password.",
+      "invalidApiKey": "Invalid or revoked API Key",
+      "invalidCredentials": "Invalid email or password",
+      "sessionExpired": "Your session has expired. Please reconnect your account.",
+      "refreshFailed": "Session expired and couldn't be refreshed. Please reconnect your account."
+    }
+  },
+  "triggers": {
+    "validateEmail": {
+      "label": "🔍 Validate Email (Advanced)",
+      "description": "Validate individual emails with advanced spam trap detection, deliverability scoring, and security analysis",
+      "email": {
+        "label": "📧 Email to Validate",
+        "helpText": "Email address to validate (required)"
+      },
+      "checkSmtp": {
+        "label": "✅ SMTP Verification",
+        "helpText": "Perform real SMTP verification (slower but more accurate)"
+      },
+      "includeRawDns": {
+        "label": "🔍 Include Raw DNS Records",
+        "helpText": "Include complete SPF, DKIM, DMARC records in results"
+      },
+      "validationTimeout": {
+        "label": "⏱️ Custom Timeout (seconds)",
+        "helpText": "Maximum wait time for validation (15-60 seconds)"
+      },
+      "errors": {
+        "invalidEmail": "Invalid email format",
+        "validationFailed": "Email validation failed",
+        "timeout": "Validation timed out",
+        "serviceUnavailable": "Service temporarily unavailable"
+      }
+    }
+  },
+  "creates": {
+    "batchValidate": {
+      "label": "📊 Batch Validate Emails",
+      "description": "Validate large batches of emails with real-time progress tracking",
+      "inputMethod": {
+        "label": "📥 Input Method",
+        "helpText": "Select how to provide emails for validation",
+        "choices": {
+          "textList": "Text List (comma/newline separated)",
+          "fileUrl": "File URL (CSV/TXT/ZIP)",
+          "directArray": "Direct Array (from previous step)"
+        }
+      },
+      "emails": {
+        "label": "📧 Email List",
+        "helpText": "Comma or newline separated email list"
+      },
+      "fileUrl": {
+        "label": "🔗 File URL",
+        "helpText": "URL to CSV, TXT or ZIP file with email list"
+      },
+      "priority": {
+        "label": "🎯 Processing Priority",
+        "helpText": "Processing speed (high priority for ENTERPRISE only)",
+        "choices": {
+          "normal": "Normal (standard speed)",
+          "high": "High (faster, ENTERPRISE only)",
+          "highest": "Highest (fastest, ENTERPRISE only)"
+        }
+      },
+      "batch Name": {
+        "label": "🏷️ Batch Name",
+        "helpText": "Identifying name for this batch"
+      },
+      "errors": {
+        "missingInput": "No emails provided through any input method",
+        "invalidFormat": "Invalid email format in list",
+        "emptyList": "Email list is empty after processing",
+        "badRequest": "Malformed request"
+      }
+    }
+  },
+  "searches": {
+    "getUsage": {
+      "label": "📊 Get Usage & Analytics",
+      "description": "Get detailed usage metrics, limits, projections, and optimization recommendations",
+      "timeRange": {
+        "label": "📅 Time Range",
+        "helpText": "Time period for usage analysis",
+        "choices": {
+          "today": "Today",
+          "yesterday": "Yesterday",
+          "thisWeek": "This Week",
+          "lastWeek": "Last Week",
+          "thisMonth": "This Month",
+          "lastMonth": "Last Month",
+          "last30Days": "Last 30 Days",
+          "last90Days": "Last 90 Days"
+        }
+      },
+      "includeProjections": {
+        "label": "🔮 Include Projections",
+        "helpText": "Include usage projections and limit alerts"
+      },
+      "includeRecommendations": {
+        "label": "💡 Include Recommendations",
+        "helpText": "Include optimization recommendations based on usage"
+      },
+      "errors": {
+        "invalidRange": "Invalid time range",
+        "quotaExceeded": "Query quota exceeded",
+        "serviceError": "Error fetching usage data"
+      }
+    }
+  },
+  "errors": {
+    "rateLimit": "Rate limit exceeded. Retrying in {{delay}} seconds...",
+    "serverError": "Internal server error. If the problem persists, contact support.",
+    "forbidden": "Access denied. Check your account permissions.",
+    "notFound": "Resource not found",
+    "badRequest": "Invalid request data"
+  },
+  "common": {
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "Error",
+    "retry": "Retrying...",
+    "timeout": "Request timed out"
+  }
+}

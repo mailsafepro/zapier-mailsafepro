@@ -1,0 +1,145 @@
+{
+  "auth": {
+    "apiKey": {
+      "label": "Chave API",
+      "helpText": "Sua chave API do MailSafePro (começa com sk_live_ ou sk_test_). Obtenha em: https://app.mailsafepro.com/dashboard/api-keys"
+    },
+    "email": {
+      "label": "E-mail",
+      "helpText": "Seu e-mail da conta MailSafePro. Necessário apenas se usar autenticação JWT."
+    },
+    "password": {
+      "label": "Senha",
+      "helpText": "Sua senha do MailSafePro. Necessário apenas se usar autenticação JWT."
+    },
+    "test": {
+      "apiKeySuccess": "✅ Autenticação com chave API bem-sucedida",
+      "jwtSuccess": "✅ Autenticação JWT bem-sucedida",
+      "testFailed": "Teste de autenticação falhou"
+    },
+    "errors": {
+      "noMethod": "Método de autenticação não fornecido. Use chave API OU E-mail+Senha.",
+      "invalidApiKey": "Chave API inválida ou revogada",
+      "invalidCredentials": "E-mail ou senha inválidos",
+      "sessionExpired": "Sua sessão expirou. Por favor, reconecte sua conta.",
+      "refreshFailed": "Sua sessão expirou e não conseguimos atualizá-la. Por favor, reconecte sua conta."
+    }
+  },
+  "triggers": {
+    "validateEmail": {
+      "label": "🔍 Validar E-mail Avançado",
+      "description": "Valide e-mails individuais com detecção avançada de armadilhas de spam, pontuação de entregabilidade e análise de segurança",
+      "email": {
+        "label": "📧 E-mail para Validar",
+        "helpText": "Endereço de e-mail para validar (obrigatório)"
+      },
+      "checkSmtp": {
+        "label": "✅ Verificação SMTP",
+        "helpText": "Realizar verificação SMTP real (mais lento mas mais preciso)"
+      },
+      "includeRawDns": {
+        "label": "🔍 Incluir Registros DNS Completos",
+        "helpText": "Incluir registros SPF, DKIM, DMARC completos nos resultados"
+      },
+      "validationTimeout": {
+        "label": "⏱️ Tempo Limite Personalizado (segundos)",
+        "helpText": "Tempo máximo de espera para validação (15-60 segundos)"
+      },
+      "errors": {
+        "invalidEmail": "Formato de e-mail inválido",
+        "validationFailed": "Validação de e-mail falhou",
+        "timeout": "Validação expirou por tempo limite",
+        "serviceUnavailable": "Serviço temporariamente indisponível"
+      }
+    }
+  },
+  "creates": {
+    "batchValidate": {
+      "label": "📊 Validação em Lote de E-mails",
+      "description": "Valide grandes lotes de e-mails com rastreamento em tempo real",
+      "inputMethod": {
+        "label": "📥 Método de Entrada",
+        "helpText": "Selecione como fornecer e-mails para validação",
+        "choices": {
+          "textList": "Lista de Texto (separado por vírgulas/quebras de linha)",
+          "fileUrl": "URL do Arquivo (CSV/TXT/ZIP)",
+          "directArray": "Array Direto (de etapa anterior)"
+        }
+      },
+      "emails": {
+        "label": "📧 Lista de E-mails",
+        "helpText": "Lista de e-mails separados por vírgulas ou quebras de linha"
+      },
+      "fileUrl": {
+        "label": "🔗 URL do Arquivo",
+        "helpText": "URL para arquivo CSV, TXT ou ZIP com lista de e-mails"
+      },
+      "priority": {
+        "label": "🎯 Prioridade de Processamento",
+        "helpText": "Velocidade de processamento (alta prioridade apenas para ENTERPRISE)",
+        "choices": {
+          "normal": "Normal (velocidade padrão)",
+          "high": "Alta (mais rápido, apenas ENTERPRISE)",
+          "highest": "Máxima (mais rápido possível, apenas ENTERPRISE)"
+        }
+      },
+      "batchName": {
+        "label": "🏷️ Nome do Lote",
+        "helpText": "Nome identificador para este lote"
+      },
+      "errors": {
+        "missingInput": "Nenhum e-mail fornecido por qualquer método de entrada",
+        "invalidFormat": "Formato de e-mail inválido na lista",
+        "emptyList": "Lista de e-mails vazia após processamento",
+        "badRequest": "Solicitação mal formulada"
+      }
+    }
+  },
+  "searches": {
+    "getUsage": {
+      "label": "📊 Obter Uso e Análise",
+      "description": "Obtenha métricas detalhadas de uso, limites, projeções e recomendações de otimização",
+      "timeRange": {
+        "label": "📅 Período de Tempo",
+        "helpText": "Período de tempo para análise de uso",
+        "choices": {
+          "today": "Hoje",
+          "yesterday": "Ontem",
+          "thisWeek": "Esta Semana",
+          "lastWeek": "Última Semana",
+          "thisMonth": "Este Mês",
+          "lastMonth": "Último Mês",
+          "last30Days": "Últimos 30 Dias",
+          "last90Days": "Últimos 90 Dias"
+        }
+      },
+      "includeProjections": {
+        "label": "🔮 Incluir Projeções",
+        "helpText": "Incluir projeções de uso e alertas de limites"
+      },
+      "includeRecommendations": {
+        "label": "💡 Incluir Recomendações",
+        "helpText": "Incluir recomendações de otimização baseadas no uso"
+      },
+      "errors": {
+        "invalidRange": "Período de tempo inválido",
+        "quotaExceeded": "Cota de consultas excedida",
+        "serviceError": "Erro ao obter dados de uso"
+      }
+    }
+  },
+  "errors": {
+    "rateLimit": "Limite de taxa excedido. Tentando novamente em {{delay}} segundos...",
+    "serverError": "Erro interno do servidor. Se o problema persistir, entre em contato com o suporte.",
+    "forbidden": "Acesso negado. Verifique as permissões da sua conta.",
+    "notFound": "Recurso não encontrado",
+    "badRequest": "Dados de solicitação inválidos"
+  },
+  "common": {
+    "loading": "Carregando...",
+    "success": "Sucesso",
+    "error": "Erro",
+    "retry": "Tentando novamente...",
+    "timeout": "Solicitação expirou por tempo limite"
+  }
+}
