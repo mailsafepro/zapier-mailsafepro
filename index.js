@@ -395,11 +395,17 @@ const afterResponse = async (response, z, bundle) => {
 // ============================================================================
 
 module.exports = {
-  version: CONFIG.version,
+  version: require('./package.json').version,
   platformVersion: require('zapier-platform-core').version,
-  authentication,
+
+  // Solo exportar la configuración de autenticación de Zapier, no todo el módulo
+  authentication: authentication.authentication,
+
+  // Hooks globales
   beforeRequest: [beforeRequest],
   afterResponse: [afterResponse],
+
+  // Modules
   triggers: {
     [validateEmailTrigger.key]: validateEmailTrigger,
   },
