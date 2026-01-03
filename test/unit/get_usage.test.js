@@ -52,14 +52,14 @@ describe('📊 get_usage.js - Test Suite Completo', () => {
         key: 'include_projections',
         type: 'boolean',
         required: false,
-        default: true,
+        default: 'true',
       });
 
       expect(inputFields[4]).toMatchObject({
         key: 'include_recommendations',
         type: 'boolean',
         required: false,
-        default: true,
+        default: 'true',
       });
     });
 

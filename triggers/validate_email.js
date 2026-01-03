@@ -7,9 +7,9 @@ const validateEmailTrigger = {
   key: 'validate_email_premium',
   noun: 'Validación Email Avanzada',
   display: {
-    label: '🔍 Validar Email Avanzado',
+    label: '🔍 Validate Email Advanced',
     description:
-      'Valida un email con puntuación de riesgo, detección de spam traps y análisis completo de deliverability.',
+      'Triggers when an email is validated with risk scoring, spam trap detection, and complete deliverability analysis.',
   },
   operation: {
     inputFields: [
@@ -83,7 +83,7 @@ const validateEmailTrigger = {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'User-Agent': 'Zapier-Integration/2.0.0',
+            'User-Agent': 'Zapier-MailSafePro/2.0.0',
             'X-Client-Version': '2.0.0',
             ...(bundle.authData.apiKey ? { 'X-API-Key': bundle.authData.apiKey } : {}),
             ...(bundle.authData.jwt ? { Authorization: `Bearer ${bundle.authData.jwt}` } : {}),

@@ -1,5 +1,7 @@
 // Mock global de jwt-decode para E2E
-jest.mock('jwt-decode');
+jest.mock('jwt-decode', () => ({
+  jwtDecode: jest.fn(),
+}));
 
 const authentication = require('../../authentication');
 const validateEmailTrigger = require('../../triggers/validate_email');
@@ -12,7 +14,7 @@ const {
   mockUsageResponse,
   mockAuthResponse,
 } = require('../mocks/api-responses');
-const jwtDecode = require('jwt-decode');
+const { jwtDecode } = require('jwt-decode');
 
 describe('End-to-End Integration Tests', () => {
   let z;

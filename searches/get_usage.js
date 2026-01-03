@@ -13,9 +13,9 @@ const getUsageSearch = {
   key: 'get_usage',
   noun: 'Métricas de Uso',
   display: {
-    label: '📊 Métricas de Uso Avanzadas',
+    label: '📊 Get Advanced Usage Metrics',
     description:
-      'Obtén métricas detalladas de uso, límites, proyecciones y recomendaciones de optimización.',
+      'Get detailed usage metrics, limits, projections, and optimization recommendations.',
   },
 
   operation: {
@@ -129,7 +129,7 @@ const getUsageSearch = {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'User-Agent': 'Zapier-Usage-Analytics/2.0.0',
+            'User-Agent': 'Zapier-MailSafePro/2.0.0',
             'X-Client-Version': '2.0.0',
             ...(bundle.authData.apiKey
               ? { 'X-API-Key': bundle.authData.apiKey }

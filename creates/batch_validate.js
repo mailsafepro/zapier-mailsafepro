@@ -235,7 +235,7 @@ const batchValidateCreate = {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'User-Agent': 'Zapier-Batch-Integration/2.0.0',
+            'User-Agent': 'Zapier-MailSafePro/2.0.0',
             'X-Client-Version': '2.0.0',
             ...(bundle.authData.apiKey ? { 'X-API-Key': bundle.authData.apiKey } : {}),
             ...(bundle.authData.jwt ? { Authorization: `Bearer ${bundle.authData.jwt}` } : {}),
@@ -398,7 +398,7 @@ const batchValidateCreate = {
         type: 'integer',
       },
       { key: 'input_method', label: '📥 Método de Entrada Utilizado', type: 'string' },
-      { key: 'total_emails_estimated', label: '📧 Total de Emails Estimado', type: 'string' },
+      { key: 'total_emails_estimated', label: '📧 Total de Emails Estimado', type: 'integer' },
       {
         key: 'validation_options__check_smtp',
         label: '🔄 Verificación SMTP Solicitada',

@@ -1,7 +1,7 @@
 {
   "name": "zapier-mailsafepro-integration",
-  "version": "1.0.0",
-  "description": "Integración empresarial TOP 1% para Zapier con MailSafePro API - Sistema avanzado de validación de emails con autenticación dual, métricas en tiempo real, detección de spam traps y análisis de calidad.",
+  "version": "2.0.0",
+  "description": "Integración empresarial TOP 1% para Zapier con MailSafePro API - Sistema avanzado de validación de emails con autenticación dual, métricas en tiempo real, detección de spam traps, webhooks y análisis de calidad.",
   "main": "index.js",
   "scripts": {
     "test": "jest",
@@ -18,8 +18,7 @@
     "deploy": "zapier push",
     "docs": "zapier describe",
     "check": "npm run lint && npm run test:coverage",
-    "prepublishOnly": "npm run check",
-    "prepare": "husky install"
+    "prepublishOnly": "npm run check"
   },
   "dependencies": {
     "jwt-decode": "^4.0.0",

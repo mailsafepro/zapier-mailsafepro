@@ -3,7 +3,7 @@
  * @description Sistema de autenticación para MailSafePro compatible con Zapier v18.
  */
 
-const jwtDecode = require('jwt-decode');
+const { jwtDecode } = require('jwt-decode');
 
 const CONFIG = {
   baseUrl: 'https://api.mailsafepro.com/v1',

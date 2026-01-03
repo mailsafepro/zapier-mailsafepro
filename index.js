@@ -7,14 +7,20 @@
  * - Logging estructurado para debugging
  * - Testing hooks y mocks
  * - Versionado de API
- * @version 1.0.0
+ * - Webhooks para resultados async
+ * - Polling de estado de batch
+ * @version 2.0.0
  * @author MailSafePro Team
  */
 
 const authentication = require('./authentication');
 const validateEmailTrigger = require('./triggers/validate_email');
+const batchWebhookTrigger = require('./triggers/batch_webhook');
 const batchValidateCreate = require('./creates/batch_validate');
+const cancelBatchCreate = require('./creates/cancel_batch');
 const getUsageSearch = require('./searches/get_usage');
+const getBatchStatusSearch = require('./searches/get_batch_status');
+const getBatchResultsSearch = require('./searches/get_batch_results');
 
 // ============================================================================
 // CONFIGURACIÓN
@@ -408,12 +414,16 @@ module.exports = {
   // Modules
   triggers: {
     [validateEmailTrigger.key]: validateEmailTrigger,
+    [batchWebhookTrigger.key]: batchWebhookTrigger,
   },
   creates: {
     [batchValidateCreate.key]: batchValidateCreate,
+    [cancelBatchCreate.key]: cancelBatchCreate,
   },
   searches: {
     [getUsageSearch.key]: getUsageSearch,
+    [getBatchStatusSearch.key]: getBatchStatusSearch,
+    [getBatchResultsSearch.key]: getBatchResultsSearch,
   },
   ...(process.env.NODE_ENV === 'test' && {
     testHelpers: {

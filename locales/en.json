@@ -51,6 +51,22 @@
         "timeout": "Validation timed out",
         "serviceUnavailable": "Service temporarily unavailable"
       }
+    },
+    "batchWebhook": {
+      "label": "🔔 Batch Validation Complete (Webhook)",
+      "description": "Triggers automatically when a batch validation completes. Ideal for automating result processing.",
+      "filterStatus": {
+        "label": "🎯 Filter by Status",
+        "helpText": "Only receive notifications for batches with this status"
+      },
+      "minEmails": {
+        "label": "📧 Minimum Emails",
+        "helpText": "Only notify if batch has at least this many emails"
+      },
+      "includeResultsSummary": {
+        "label": "📊 Include Results Summary",
+        "helpText": "Include summarized statistics in the notification"
+      }
     }
   },
   "creates": {
@@ -83,7 +99,7 @@
           "highest": "Highest (fastest, ENTERPRISE only)"
         }
       },
-      "batch Name": {
+      "batchName": {
         "label": "🏷️ Batch Name",
         "helpText": "Identifying name for this batch"
       },
@@ -92,6 +108,27 @@
         "invalidFormat": "Invalid email format in list",
         "emptyList": "Email list is empty after processing",
         "badRequest": "Malformed request"
+      }
+    },
+    "cancelBatch": {
+      "label": "🛑 Cancel Batch Validation",
+      "description": "Cancel a batch validation that is queued or in progress",
+      "jobId": {
+        "label": "🆔 Batch ID",
+        "helpText": "The unique identifier of the batch to cancel"
+      },
+      "reason": {
+        "label": "📝 Cancellation Reason",
+        "helpText": "Optional reason for cancelling (for audit purposes)"
+      },
+      "preservePartialResults": {
+        "label": "💾 Preserve Partial Results",
+        "helpText": "Keep results of already processed emails"
+      },
+      "errors": {
+        "notFound": "Batch not found",
+        "alreadyFinished": "Batch is already completed or cancelled",
+        "forbidden": "You don't have permission to cancel this batch"
       }
     }
   },
@@ -125,6 +162,55 @@
         "invalidRange": "Invalid time range",
         "quotaExceeded": "Query quota exceeded",
         "serviceError": "Error fetching usage data"
+      }
+    },
+    "getBatchStatus": {
+      "label": "📊 Get Batch Status",
+      "description": "Get the current status of a batch validation, including progress and estimated time",
+      "jobId": {
+        "label": "🆔 Batch ID",
+        "helpText": "The unique identifier of the batch"
+      },
+      "includePartialResults": {
+        "label": "📊 Include Partial Results",
+        "helpText": "Include statistics of already processed emails"
+      },
+      "errors": {
+        "notFound": "Batch not found",
+        "invalidId": "Invalid batch ID format"
+      }
+    },
+    "getBatchResults": {
+      "label": "📋 Get Batch Results",
+      "description": "Get detailed results of a completed batch validation with filtering and pagination",
+      "jobId": {
+        "label": "🆔 Batch ID",
+        "helpText": "The unique identifier of the completed batch"
+      },
+      "filterStatus": {
+        "label": "🎯 Filter by Status",
+        "helpText": "Filter results by validation status"
+      },
+      "page": {
+        "label": "📄 Page",
+        "helpText": "Page number for pagination"
+      },
+      "pageSize": {
+        "label": "📊 Results per Page",
+        "helpText": "Number of results per page (max 100)"
+      },
+      "sortBy": {
+        "label": "📈 Sort by",
+        "helpText": "Field to sort results by"
+      },
+      "includeDetails": {
+        "label": "🔍 Include Full Details",
+        "helpText": "Include detailed DNS, SMTP and spam trap info for each email"
+      },
+      "errors": {
+        "notFound": "Batch not found",
+        "notComplete": "Batch has not completed yet",
+        "invalidParams": "Invalid query parameters"
       }
     }
   },

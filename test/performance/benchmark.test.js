@@ -15,6 +15,10 @@ const {
   mockAuthResponse,
 } = require('../mocks/api-responses');
 
+jest.mock('jwt-decode', () => ({
+  jwtDecode: jest.fn(),
+}));
+
 describe('Performance Benchmarks', () => {
   let z;
   let bundle;
@@ -42,7 +46,16 @@ describe('Performance Benchmarks', () => {
         }),
       },
     };
+
     bundle = createMockBundle();
+
+    const { jwtDecode } = require('jwt-decode');
+    jwtDecode.mockReturnValue({
+      sub: '1234567890',
+      name: 'Test User',
+      iat: 1516239022,
+      exp: Date.now() / 1000 + 3600, // Expires in 1 hour
+    });
   });
 
   describe('Authentication Performance', () => {

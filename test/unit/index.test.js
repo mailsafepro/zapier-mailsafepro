@@ -1,4 +1,5 @@
 const index = require('../../index');
+const authentication = require('../../authentication');
 const { createMockBundle, createMockResponse, mockZapier } = require('../mocks/zapier-mocks');
 
 // Los hooks se exportan como arrays en index.js
@@ -11,7 +12,7 @@ const { logger, sanitizeForLogging, isRecoverableError, calculateRetryDelay } = 
 describe('📦 Index.js - Test Suite Completo', () => {
   describe('🔧 Configuración y Exportación', () => {
     it('debería exportar la configuración correcta', () => {
-      expect(index).toHaveProperty('version', '2.0.0');
+      expect(index).toHaveProperty('version', '1.0.0');
       expect(index).toHaveProperty('platformVersion');
       expect(index).toHaveProperty('authentication');
       expect(index).toHaveProperty('beforeRequest');
@@ -245,44 +246,44 @@ describe('📦 Index.js - Test Suite Completo', () => {
         },
       });
 
-      const originalBeforeRequest = index.authentication.beforeRequest;
-      index.authentication.beforeRequest = [mockPreRequest];
+      const originalBeforeRequest = authentication.beforeRequest;
+      authentication.beforeRequest = [mockPreRequest];
 
       const resultRequest = await beforeRequest(mockZapier, bundle);
 
       expect(mockPreRequest).toHaveBeenCalledWith(bundle.request, mockZapier, bundle);
       expect(resultRequest.headers.Authorization).toBe('Bearer test-token');
       expect(resultRequest.headers['X-API-Key']).toBe('test-api-key');
-      expect(resultRequest.headers['User-Agent']).toContain('Zapier-MailSafePro/2.0.0');
+      expect(resultRequest.headers['User-Agent']).toContain('Zapier-MailSafePro/1.0.0');
       expect(resultRequest.headers['X-Request-ID']).toMatch(/^req_\d+_[\w\d]+$/);
       expect(bundle.meta.requestId).toBeDefined();
 
-      index.authentication.beforeRequest = originalBeforeRequest;
+      authentication.beforeRequest = originalBeforeRequest;
     });
 
     it('debería manejar errores de autenticación preRequest', async () => {
       const mockPreRequest = jest.fn().mockRejectedValue(new Error('auth_failed'));
 
-      const originalBeforeRequest = index.authentication.beforeRequest;
-      index.authentication.beforeRequest = [mockPreRequest];
+      const originalBeforeRequest = authentication.beforeRequest;
+      authentication.beforeRequest = [mockPreRequest];
 
       await expect(beforeRequest(mockZapier, bundle)).rejects.toThrow('auth_failed');
 
-      index.authentication.beforeRequest = originalBeforeRequest;
+      authentication.beforeRequest = originalBeforeRequest;
     });
 
     it('debería funcionar sin authentication.beforeRequest', async () => {
-      const originalBeforeRequest = index.authentication.beforeRequest;
-      index.authentication.beforeRequest = undefined;
+      const originalBeforeRequest = authentication.beforeRequest;
+      authentication.beforeRequest = undefined;
 
       const resultRequest = await beforeRequest(mockZapier, bundle);
 
-      expect(resultRequest.headers['User-Agent']).toContain('Zapier-MailSafePro/2.0.0');
+      expect(resultRequest.headers['User-Agent']).toContain('Zapier-MailSafePro/1.0.0');
       expect(resultRequest.headers['X-Request-ID']).toBeDefined();
       expect(bundle.meta.requestId).toBeDefined();
 
       // Restaurar
-      index.authentication.beforeRequest = originalBeforeRequest;
+      authentication.beforeRequest = originalBeforeRequest;
     });
 
     it('debería preservar headers existentes', async () => {
@@ -292,8 +293,8 @@ describe('📦 Index.js - Test Suite Completo', () => {
       };
 
       const mockPreRequest = jest.fn().mockResolvedValue({ headers: {} });
-      const originalBeforeRequest = index.authentication.beforeRequest;
-      index.authentication.beforeRequest = [mockPreRequest];
+      const originalBeforeRequest = authentication.beforeRequest;
+      authentication.beforeRequest = [mockPreRequest];
 
       const resultRequest = await beforeRequest(mockZapier, bundle);
 
@@ -301,7 +302,7 @@ describe('📦 Index.js - Test Suite Completo', () => {
       expect(resultRequest.headers['Content-Type']).toBe('application/xml');
       expect(resultRequest.headers['User-Agent']).toBeDefined();
 
-      index.authentication.beforeRequest = originalBeforeRequest;
+      authentication.beforeRequest = originalBeforeRequest;
     });
   });
 
@@ -352,13 +353,11 @@ describe('📦 Index.js - Test Suite Completo', () => {
           refreshToken: 'old.refresh',
         };
 
-        const refreshSpy = jest
-          .spyOn(index.authentication, 'refreshAccessToken')
-          .mockResolvedValue({
-            jwt: 'new.jwt',
-            refreshToken: 'new.refresh',
-            expiresAt: Date.now() + 3600000,
-          });
+        const refreshSpy = jest.spyOn(authentication, 'refreshAccessToken').mockResolvedValue({
+          jwt: 'new.jwt',
+          refreshToken: 'new.refresh',
+          expiresAt: Date.now() + 3600000,
+        });
 
         mockZapier.request.mockResolvedValue(
           createMockResponse({
@@ -391,7 +390,7 @@ describe('📦 Index.js - Test Suite Completo', () => {
         };
 
         jest
-          .spyOn(index.authentication, 'refreshAccessToken')
+          .spyOn(authentication, 'refreshAccessToken')
           .mockRejectedValue(new Error('refresh_failed'));
 
         const response401 = createMockResponse({

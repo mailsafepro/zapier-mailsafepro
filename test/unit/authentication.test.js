@@ -1,10 +1,12 @@
 const authentication = require('../../authentication');
 const { createMockBundle, createMockResponse, mockZapier } = require('../mocks/zapier-mocks');
 const { mockAuthResponse, mockErrorResponses } = require('../mocks/api-responses');
-const jwtDecode = require('jwt-decode');
+const { jwtDecode } = require('jwt-decode');
 
 // Mock jwt-decode
-jest.mock('jwt-decode');
+jest.mock('jwt-decode', () => ({
+  jwtDecode: jest.fn(),
+}));
 
 describe('Authentication System', () => {
   let z;

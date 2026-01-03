@@ -3,6 +3,7 @@
 TOP 1% Zapier Integration | Enterprise-Grade Email Validation & Security
 
 [![Zapier Platform](https://img.shields.io/badge/Zapier-Platform-v2.0-blue)](#)
+[![Version](https://img.shields.io/badge/Version-2.0.0-success)](#)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](#)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-brightgreen)](#)
 [![Zapier Core](https://img.shields.io/badge/Zapier%20Core-18.0.1-success)](#)
@@ -87,9 +88,15 @@ development):
 
 1. Search for **MailSafePro** inside Zapier when creating a Zap.
 2. Choose the action:
-   - **Validate Email (Advanced)** for single-email checks.
-   - **Batch Validate Emails** for CSV/list workflows.
-   - **Get Usage & Analytics** for monitoring.
+   - **🔍 Validate Email Advanced** - Single email validation with spam trap
+     detection
+   - **📊 Batch Validate Emails** - Process large lists with real-time tracking
+   - **🔔 Batch Validation Complete (Webhook)** - Get notified when batches
+     finish
+   - **📊 Get Batch Status** - Monitor batch progress in real-time
+   - **📋 Get Batch Results** - Retrieve results with filtering and pagination
+   - **🛑 Cancel Batch Validation** - Stop batches in progress
+   - **📊 Get Advanced Usage Metrics** - Monitor usage and get recommendations
 3. Connect your MailSafePro account using either:
    - **API Key** (recommended for production).
    - **JWT login** (email + password).
@@ -517,7 +524,7 @@ Company Enterprise Features Included:
 Support ✅ White-label Solutions ✅ Volume Discounts ✅ Priority Support Ready
 to transform your email deliverability? Get Started Today
 
-## © 2025 MailSafePro. All rights reserved. | Privacy Policy | Terms of Service
+## © 2026 MailSafePro. All rights reserved. | Privacy Policy | Terms of Service
 
 <div align="center">
 🏆 TOP 1% ZAPIER INTEGRATION 🏆
