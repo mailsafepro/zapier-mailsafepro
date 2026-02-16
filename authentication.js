@@ -6,7 +6,7 @@
 const { jwtDecode } = require('jwt-decode');
 
 const CONFIG = {
-  baseUrl: 'https://api.mailsafepro.com/v1',
+  baseUrl: 'https://api.mailsafepro.es',
   timeout: {
     auth: 12000,
     test: 10000,
@@ -201,13 +201,25 @@ const test = async (z, bundle) => {
   const headers = {
     'Content-Type': 'application/json',
   };
-  if (bundle.authData.apiKey) {
-    headers['X-API-Key'] = bundle.authData.apiKey;
-  } else if (bundle.authData.jwt) {
-    headers['Authorization'] = `Bearer ${bundle.authData.jwt}`;
+
+  // Fallback: Check inputData if authData is empty (handling Custom Auth behavior)
+  const apiKey = bundle.authData.apiKey || bundle.inputData?.apiKey;
+  const jwt = bundle.authData.jwt || bundle.inputData?.jwt || bundle.authData.access_token;
+
+  if (apiKey) {
+    headers['X-API-Key'] = apiKey;
+  } else if (jwt) {
+    headers['Authorization'] = `Bearer ${jwt}`;
   } else {
-    throw new z.errors.Error('No se encontró método de autenticación válido.', 'AUTH_MISSING', 401);
+    // Log available keys for debugging (redacted)
+    const keys = Object.keys({ ...bundle.authData, ...bundle.inputData });
+    throw new z.errors.Error(
+      `No se encontró método de autenticación válido. Keys disponibles: ${keys.join(', ')}`,
+      'AUTH_MISSING',
+      401
+    );
   }
+
   try {
     const testResponse = await withRetry(() =>
       z.request({
@@ -241,7 +253,7 @@ const test = async (z, bundle) => {
     z.console.log('[Auth] Test de autenticación exitoso');
     return {
       success: true,
-      authMethod: bundle.authData.authMethod,
+      authMethod: apiKey ? 'api_key' : 'jwt',
       ...testResponse.json,
     };
   } catch (error) {
@@ -254,47 +266,6 @@ const test = async (z, bundle) => {
       500
     );
   }
-};
-
-const authentication = {
-  type: 'custom',
-  fields: [
-    {
-      key: 'apiKey',
-      label: 'API Key',
-      required: false,
-      type: 'string',
-      helpText:
-        'Tu API Key de MailSafePro (32+ caracteres). Encuéntrala en Dashboard > API Keys. Recomendado para producción.',
-      placeholder: 'sk_live_abc123...',
-    },
-    {
-      key: 'email',
-      label: 'Email (para autenticación JWT)',
-      required: false,
-      type: 'string',
-      helpText: 'Tu email de usuario MailSafePro. Solo necesario si usas JWT en lugar de API Key.',
-      placeholder: 'usuario@empresa.com',
-    },
-    {
-      key: 'password',
-      label: 'Contraseña',
-      required: false,
-      type: 'password',
-      helpText: 'Tu contraseña de MailSafePro. Solo necesario si usas JWT.',
-    },
-  ],
-  connectionLabel: (z, bundle) => {
-    if (bundle.authData.apiKey) {
-      const prefix = bundle.authData.apiKey.slice(0, 8);
-      return `API Key: ${prefix}...`;
-    }
-    if (bundle.authData.email) {
-      return `Usuario: ${bundle.authData.email}`;
-    }
-    return 'MailSafePro (no autenticado)';
-  },
-  test,
 };
 
 const getSessionKey = async (z, bundle) => {
@@ -452,6 +423,51 @@ const getSessionKey = async (z, bundle) => {
     'AUTH_UNSUPPORTED_METHOD',
     400
   );
+};
+
+const authentication = {
+  type: 'custom',
+  test,
+  fields: [
+    {
+      key: 'apiKey',
+      label: 'API Key',
+      required: false,
+      type: 'string',
+      helpText:
+        'Tu API Key de MailSafePro (32+ caracteres). Encuéntrala en Dashboard > API Keys. Recomendado para producción. [Get your API Key](https://app.mailsafepro.com/dashboard/api-keys)',
+      placeholder: 'sk_live_abc123...',
+    },
+    {
+      key: 'email',
+      label: 'Email (para autenticación JWT)',
+      required: false,
+      type: 'string',
+      helpText: 'Tu email de usuario MailSafePro. Solo necesario si usas JWT en lugar de API Key. [Learn about JWT authentication](https://docs.mailsafepro.com/authentication/jwt)',
+      placeholder: 'usuario@empresa.com',
+    },
+    {
+      key: 'password',
+      label: 'Contraseña',
+      required: false,
+      type: 'password',
+      helpText: 'Tu contraseña de MailSafePro. Solo necesario si usas JWT.',
+    },
+  ],
+  connectionLabel: (z, bundle) => {
+    // Check both authData and inputData for label
+    const apiKey = bundle.authData.apiKey || bundle.inputData?.apiKey;
+    const email = bundle.authData.email || bundle.inputData?.email;
+
+    if (apiKey) {
+      const prefix = apiKey.slice(0, 8);
+      return `API Key: ${prefix}...`;
+    }
+    if (email) {
+      return `Usuario: ${email}`;
+    }
+    return 'MailSafePro (no autenticado)';
+  },
 };
 
 module.exports = {

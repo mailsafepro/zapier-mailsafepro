@@ -1,0 +1,106 @@
+{
+  "name": "Prevent Signup Fraud with Email Validation",
+  "description": "Validate emails during user signup to prevent fake accounts, spam traps, and disposable emails from entering your system.",
+  "category": "Fraud Prevention",
+  "apps": ["mailsafepro", "webhook", "slack", "airtable"],
+  "trigger": {
+    "app": "webhook",
+    "action": "catch_hook",
+    "description": "When a new user signs up (webhook from your app)",
+    "input_mapping": {
+      "webhook_url": "https://hooks.zapier.com/hooks/catch/..."
+    }
+  },
+  "steps": [
+    {
+      "app": "mailsafepro",
+      "action": "validate_email_premium",
+      "description": "Validate the signup email",
+      "input_mapping": {
+        "email": "{{trigger.email}}",
+        "check_smtp": true,
+        "include_raw_dns": true
+      }
+    },
+    {
+      "type": "paths",
+      "description": "Route based on validation result",
+      "paths": [
+        {
+          "name": "Valid Email",
+          "condition": "{{step1.valid}} equals true AND {{step1.risk_score}} less than 0.3",
+          "steps": [
+            {
+              "app": "webhook",
+              "action": "post",
+              "description": "Approve signup",
+              "input_mapping": {
+                "url": "{{trigger.callback_url}}",
+                "data": {
+                  "status": "approved",
+                  "user_id": "{{trigger.user_id}}",
+                  "email_quality": "{{step1.quality_tier}}"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Risky Email",
+          "condition": "{{step1.risk_score}} greater than 0.3 AND {{step1.risk_score}} less than 0.7",
+          "steps": [
+            {
+              "app": "slack",
+              "action": "send_channel_message",
+              "description": "Alert for manual review",
+              "input_mapping": {
+                "channel": "#signup-review",
+                "message": "⚠️ Risky Signup Detected\n\nEmail: {{trigger.email}}\nRisk Score: {{step1.risk_score}}\nQuality: {{step1.quality_tier}}\n\nPlease review manually."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Blocked Email",
+          "condition": "{{step1.valid}} equals false OR {{step1.risk_score}} greater than 0.7 OR {{step1.spam_trap_check.is_spam_trap}} equals true",
+          "steps": [
+            {
+              "app": "webhook",
+              "action": "post",
+              "description": "Reject signup",
+              "input_mapping": {
+                "url": "{{trigger.callback_url}}",
+                "data": {
+                  "status": "rejected",
+                  "user_id": "{{trigger.user_id}}",
+                  "reason": "{{step1.detail}}"
+                }
+              }
+            },
+            {
+              "app": "mailsafepro",
+              "action": "add_to_suppression_list",
+              "description": "Add to suppression list",
+              "input_mapping": {
+                "email": "{{trigger.email}}",
+                "reason": "{{step1.spam_trap_check.is_spam_trap}} ? 'spam_trap' : 'invalid_format'",
+                "permanent": true
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "use_cases": [
+    "SaaS companies preventing fake signups",
+    "E-commerce preventing fraud",
+    "Platforms maintaining user quality"
+  ],
+  "estimated_time_savings": "20+ hours per week",
+  "roi_metrics": [
+    "Reduce fake accounts by 95%",
+    "Prevent chargebacks and fraud",
+    "Improve user quality metrics"
+  ]
+}

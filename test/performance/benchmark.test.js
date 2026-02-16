@@ -4,7 +4,7 @@
  */
 
 const authentication = require('../../authentication');
-const validateEmailTrigger = require('../../triggers/validate_email');
+const validateEmailCreate = require('../../creates/validate_email');
 const batchValidateCreate = require('../../creates/batch_validate');
 const getUsageSearch = require('../../searches/get_usage');
 const { createMockBundle, createMockResponse } = require('../mocks/zapier-mocks');
@@ -93,7 +93,7 @@ describe('Performance Benchmarks', () => {
       );
 
       const start = Date.now();
-      await validateEmailTrigger.operation.perform(z, bundle);
+      await validateEmailCreate.operation.perform(z, bundle);
       const duration = Date.now() - start;
 
       expect(duration).toBeLessThan(PERFORMANCE_THRESHOLDS.singleValidation);
@@ -110,7 +110,7 @@ describe('Performance Benchmarks', () => {
       const latencies = [];
       for (let i = 0; i < 100; i++) {
         const start = Date.now();
-        await validateEmailTrigger.operation.perform(z, bundle);
+        await validateEmailCreate.operation.perform(z, bundle);
         latencies.push(Date.now() - start);
       }
 
@@ -174,7 +174,7 @@ describe('Performance Benchmarks', () => {
       const initialMemory = process.memoryUsage().heapUsed;
 
       for (let i = 0; i < 1000; i++) {
-        await validateEmailTrigger.operation.perform(z, bundle);
+        await validateEmailCreate.operation.perform(z, bundle);
       }
 
       const finalMemory = process.memoryUsage().heapUsed;
@@ -198,7 +198,7 @@ describe('Performance Benchmarks', () => {
       const start = Date.now();
       const promises = Array(10)
         .fill(null)
-        .map(() => validateEmailTrigger.operation.perform(z, bundle));
+        .map(() => validateEmailCreate.operation.perform(z, bundle));
 
       await Promise.all(promises);
       const duration = Date.now() - start;

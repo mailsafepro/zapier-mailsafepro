@@ -1,0 +1,50 @@
+{
+  "name": "Validate New Leads Before Adding to CRM",
+  "description": "Automatically validate email addresses of new leads before adding them to your CRM. Prevents bad data and improves deliverability.",
+  "category": "Lead Management",
+  "apps": ["mailsafepro", "hubspot", "salesforce", "pipedrive"],
+  "trigger": {
+    "app": "hubspot",
+    "action": "new_contact",
+    "description": "When a new contact is created in HubSpot"
+  },
+  "steps": [
+    {
+      "app": "mailsafepro",
+      "action": "validate_email_premium",
+      "description": "Validate the lead's email address",
+      "input_mapping": {
+        "email": "{{trigger.email}}",
+        "check_smtp": true,
+        "include_raw_dns": false
+      }
+    },
+    {
+      "type": "filter",
+      "condition": "{{step1.valid}} equals true AND {{step1.risk_score}} less than 0.5",
+      "description": "Only continue if email is valid and low risk"
+    },
+    {
+      "app": "hubspot",
+      "action": "update_contact",
+      "description": "Update contact with validation results",
+      "input_mapping": {
+        "contact_id": "{{trigger.id}}",
+        "email_quality_score": "{{step1.quality_score}}",
+        "email_risk_level": "{{step1.risk_level}}",
+        "email_validated": true
+      }
+    }
+  ],
+  "use_cases": [
+    "Sales teams wanting to ensure lead quality",
+    "Marketing teams preventing bounces",
+    "Data teams maintaining CRM hygiene"
+  ],
+  "estimated_time_savings": "2-3 hours per week",
+  "roi_metrics": [
+    "Reduce bounce rate by 90%",
+    "Improve email deliverability",
+    "Save time on manual verification"
+  ]
+}

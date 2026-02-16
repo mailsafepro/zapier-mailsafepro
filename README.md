@@ -20,16 +20,17 @@ TOP 1% Zapier Integration | Enterprise-Grade Email Validation & Security
 - [🚀 Overview](#-overview)
 - [🏆 Why We're Different](#-why-were-different)
 - [✨ Core Features](#-core-features)
+- [� Zap kTemplates](#-zap-templates)
 - [🛠 Quick Start](#-quick-start)
 - [Authentication Setup](#authentication-setup)
-- [📧 Usage Examples](#-usage-examples)
-- [🔧 Advanced Configuration](#-advanced-configuration)
-- [📊 Response Format](#-response-format)
-- [🚨 Error Handling](#-error-handling)
-- [📈 Performance & Limits](#-performance--limits)
+- [� Udsage Examples](#-usage-examples)
+- [�  Advanced Configuration](#-advanced-configuration)
+- [� Responsae Format](#-response-format)
+- [� Errfor Handling](#-error-handling)
+- [� Periformance & Limits](#-performance--limits)
 - [🔍 Monitoring & Analytics](#-monitoring--analytics)
 - [Tests and coverage](#tests-and-coverage)
-- [🛡️ Security & Compliance](#-security--compliance)
+- [�️D Security & Compliance](#-security--compliance)
 - [🚀 Deployment](#-deployment)
 - [🆘 Support & Resources](#-support--resources)
 - [📄 License](#-license)
@@ -40,6 +41,20 @@ MailSafePro for Zapier is the most advanced email validation integration
 available, providing enterprise-grade email security, spam trap detection, and
 deliverability analytics directly within your Zaps. Trusted by Fortune 500
 companies and startups alike.
+
+### 📋 Zap Templates
+
+Get started quickly with our pre-built Zap templates:
+
+| Template | Description | Apps |
+|----------|-------------|------|
+| **Lead Validation** | Validate new leads before adding to CRM | HubSpot, Salesforce, Pipedrive |
+| **High-Risk Alert** | Get notified when spam traps are detected | Slack, Email, Teams |
+| **Batch List Hygiene** | Clean email lists automatically | Google Drive, Sheets |
+| **Signup Fraud Prevention** | Block fake signups in real-time | Webhooks, Slack |
+| **Batch Complete Notification** | Get notified when validations finish | Slack, Email |
+
+Find all templates in the `zap-templates/` directory.
 
 ### 🏆 Why We're Different
 
@@ -476,7 +491,7 @@ Documentation
 API Reference - Complete endpoint documentation Integration Guide - Step-by-step
 setup Best Practices - Optimization tips Support Channels
 
-Email: support@mailsafepro.com Slack: Join our community Status: System status
+Email: mailsafepro1@gmail.com Slack: Join our community Status: System status
 Emergency: 24/7 critical issue support Community
 
 GitHub: Examples & Issues Discord: Developer community Blog: Latest updates

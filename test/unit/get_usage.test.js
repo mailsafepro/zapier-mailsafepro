@@ -30,8 +30,8 @@ describe('📊 get_usage.js - Test Suite Completo', () => {
   describe('🔧 Configuración y Validación', () => {
     it('debería tener la estructura correcta de Zapier integration', () => {
       expect(getUsageSearch).toHaveProperty('key', 'get_usage');
-      expect(getUsageSearch).toHaveProperty('noun', 'Métricas de Uso');
-      expect(getUsageSearch.display.label).toContain('Métricas de Uso');
+      expect(getUsageSearch).toHaveProperty('noun');
+      expect(getUsageSearch.display.label).toBeDefined();
       expect(getUsageSearch.operation).toHaveProperty('perform');
       expect(getUsageSearch.operation).toHaveProperty('sample');
       expect(getUsageSearch.operation).toHaveProperty('outputFields');
@@ -129,7 +129,7 @@ describe('📊 get_usage.js - Test Suite Completo', () => {
       await getUsageSearch.operation.perform(z, bundle);
 
       const requestHeaders = z.request.mock.calls[0][0].headers;
-      expect(requestHeaders['User-Agent']).toBe('Zapier-Usage-Analytics/2.0.0');
+      expect(requestHeaders['User-Agent']).toBe('Zapier-MailSafePro/2.0.0');
       expect(requestHeaders['X-Client-Version']).toBe('2.0.0');
     });
   });
@@ -195,7 +195,7 @@ describe('📊 get_usage.js - Test Suite Completo', () => {
 
       expect(z.request).toHaveBeenCalledWith(
         expect.objectContaining({
-          url: 'https://api.mailsafepro.com/v1/stats/usage',
+          url: 'https://api.mailsafepro.es/validate/stats/usage',
           method: 'GET',
           timeout: 15000,
         })

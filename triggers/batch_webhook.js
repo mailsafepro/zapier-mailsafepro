@@ -10,26 +10,26 @@ const batchWebhookTrigger = {
   key: 'batch_complete_webhook',
   noun: 'Batch Completado',
   display: {
-    label: '🔔 Batch Validation Complete (Webhook)',
+    label: 'Batch Validation Complete (Webhook)',
     description:
       'Triggers when a batch email validation completes. Ideal for automating result processing workflows.',
   },
 
   operation: {
-    type: 'hook',
+        type: 'hook',
 
-    inputFields: [
+        inputFields: [
       {
         key: 'filter_status',
         type: 'string',
         required: false,
-        label: '🎯 Filtrar por Estado',
+        label: 'Filtrar por Estado',
         helpText: 'Solo recibir notificaciones para batches con este estado',
         choices: {
-          all: '📊 Todos los estados',
-          completed: '✅ Solo completados exitosamente',
-          partial: '⚠️ Solo completados parcialmente',
-          failed: '❌ Solo fallidos',
+          all: 'Todos los estados',
+          completed: 'Solo completados exitosamente',
+          partial: 'Solo completados parcialmente',
+          failed: 'Solo fallidos',
         },
         default: 'all',
       },
@@ -37,7 +37,7 @@ const batchWebhookTrigger = {
         key: 'min_emails',
         type: 'integer',
         required: false,
-        label: '📧 Mínimo de Emails',
+        label: 'Mínimo de Emails',
         helpText: 'Solo notificar si el batch tiene al menos este número de emails',
         default: '1',
       },
@@ -45,7 +45,7 @@ const batchWebhookTrigger = {
         key: 'include_results_summary',
         type: 'boolean',
         required: false,
-        label: '📊 Incluir Resumen de Resultados',
+        label: 'Incluir Resumen de Resultados',
         helpText: 'Incluir estadísticas resumidas de los resultados en la notificación',
         default: 'true',
       },
@@ -54,7 +54,7 @@ const batchWebhookTrigger = {
     // Subscribe: Registrar el webhook en MailSafePro
     performSubscribe: async (z, bundle) => {
       const response = await z.request({
-        url: 'https://api.mailsafepro.com/v1/webhooks',
+        url: 'https://api.mailsafepro.es/webhooks',
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -98,7 +98,7 @@ const batchWebhookTrigger = {
       }
 
       const response = await z.request({
-        url: `https://api.mailsafepro.com/v1/webhooks/${webhookId}`,
+        url: `https://api.mailsafepro.es/webhooks/${webhookId}`,
         method: 'DELETE',
         headers: {
           'User-Agent': 'Zapier-MailSafePro/2.0.0',
@@ -149,9 +149,9 @@ const batchWebhookTrigger = {
 
         // URLs de acción
         action_urls: {
-          view_results: `https://api.mailsafepro.com/v1/validate/batch/${payload.job_id}/results`,
-          download_csv: `https://api.mailsafepro.com/v1/validate/batch/${payload.job_id}/export?format=csv`,
-          download_json: `https://api.mailsafepro.com/v1/validate/batch/${payload.job_id}/export?format=json`,
+          view_results: `https://api.mailsafepro.es/jobs/${payload.job_id}/results`,
+          download_csv: `https://api.mailsafepro.es/jobs/${payload.job_id}/export?format=csv`,
+          download_json: `https://api.mailsafepro.es/jobs/${payload.job_id}/export?format=json`,
         },
       };
 
@@ -161,7 +161,7 @@ const batchWebhookTrigger = {
     // PerformList: Obtener batches recientes para testing
     performList: async (z, bundle) => {
       const response = await z.request({
-        url: 'https://api.mailsafepro.com/v1/validate/batch/history',
+        url: 'https://api.mailsafepro.es/jobs',
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -198,17 +198,21 @@ const batchWebhookTrigger = {
             webhook_source: 'mailsafepro',
             action_urls: {
               view_results:
-                'https://api.mailsafepro.com/v1/validate/batch/batch_sample_123456/results',
+                'https://api.mailsafepro.es/jobs/batch_sample_123456/results',
               download_csv:
-                'https://api.mailsafepro.com/v1/validate/batch/batch_sample_123456/export?format=csv',
+                'https://api.mailsafepro.es/jobs/batch_sample_123456/export?format=csv',
               download_json:
-                'https://api.mailsafepro.com/v1/validate/batch/batch_sample_123456/export?format=json',
+                'https://api.mailsafepro.es/jobs/batch_sample_123456/export?format=json',
             },
           },
         ];
       }
 
-      const batches = response.json?.batches || response.json || [];
+      const batches =
+        response.json?.jobs ||
+        response.json?.batches ||
+        (Array.isArray(response.json) ? response.json : []);
+
 
       return batches.map(batch => ({
         ...batch,
@@ -219,9 +223,9 @@ const batchWebhookTrigger = {
             ? ((batch.results_summary.valid / batch.results_summary.total) * 100).toFixed(2)
             : '0',
         action_urls: {
-          view_results: `https://api.mailsafepro.com/v1/validate/batch/${batch.job_id}/results`,
-          download_csv: `https://api.mailsafepro.com/v1/validate/batch/${batch.job_id}/export?format=csv`,
-          download_json: `https://api.mailsafepro.com/v1/validate/batch/${batch.job_id}/export?format=json`,
+          view_results: `https://api.mailsafepro.es/jobs/${batch.job_id}/results`,
+          download_csv: `https://api.mailsafepro.es/jobs/${batch.job_id}/export?format=csv`,
+          download_json: `https://api.mailsafepro.es/jobs/${batch.job_id}/export?format=json`,
         },
       }));
     },
@@ -248,34 +252,34 @@ const batchWebhookTrigger = {
       webhook_source: 'mailsafepro',
       action_urls: {
         view_results:
-          'https://api.mailsafepro.com/v1/validate/batch/batch_550e8400-e29b-41d4-a716-446655440000/results',
+          'https://api.mailsafepro.es/jobs/batch_550e8400-e29b-41d4-a716-446655440000/results',
         download_csv:
-          'https://api.mailsafepro.com/v1/validate/batch/batch_550e8400-e29b-41d4-a716-446655440000/export?format=csv',
+          'https://api.mailsafepro.es/jobs/batch_550e8400-e29b-41d4-a716-446655440000/export?format=csv',
         download_json:
-          'https://api.mailsafepro.com/v1/validate/batch/batch_550e8400-e29b-41d4-a716-446655440000/export?format=json',
+          'https://api.mailsafepro.es/jobs/batch_550e8400-e29b-41d4-a716-446655440000/export?format=json',
       },
     },
 
     outputFields: [
-      { key: 'job_id', label: '🆔 ID del Batch', type: 'string' },
-      { key: 'status', label: '📊 Estado Final', type: 'string' },
-      { key: 'batch_name', label: '🏷️ Nombre del Batch', type: 'string' },
-      { key: 'total_emails', label: '📧 Total de Emails', type: 'integer' },
-      { key: 'processing_time_seconds', label: '⏱️ Tiempo de Procesamiento (seg)', type: 'number' },
-      { key: 'started_at', label: '🚀 Inicio del Procesamiento', type: 'datetime' },
-      { key: 'completed_at', label: '✅ Fin del Procesamiento', type: 'datetime' },
-      { key: 'results_summary__total', label: '📊 Total Procesados', type: 'integer' },
-      { key: 'results_summary__valid', label: '✅ Emails Válidos', type: 'integer' },
-      { key: 'results_summary__invalid', label: '❌ Emails Inválidos', type: 'integer' },
-      { key: 'results_summary__risky', label: '⚠️ Emails Riesgosos', type: 'integer' },
-      { key: 'results_summary__unknown', label: '❓ Emails Desconocidos', type: 'integer' },
-      { key: 'success_rate', label: '📈 Tasa de Éxito (%)', type: 'string' },
-      { key: 'risk_rate', label: '⚠️ Tasa de Riesgo (%)', type: 'string' },
-      { key: 'invalid_rate', label: '❌ Tasa de Inválidos (%)', type: 'string' },
-      { key: 'received_at', label: '📅 Fecha de Recepción', type: 'datetime' },
-      { key: 'action_urls__view_results', label: '🔗 URL de Resultados', type: 'string' },
-      { key: 'action_urls__download_csv', label: '📥 Descargar CSV', type: 'string' },
-      { key: 'action_urls__download_json', label: '📥 Descargar JSON', type: 'string' },
+      { key: 'job_id', label: 'ID del Batch', type: 'string' },
+      { key: 'status', label: 'Estado Final', type: 'string' },
+      { key: 'batch_name', label: 'Nombre del Batch', type: 'string' },
+      { key: 'total_emails', label: 'Total de Emails', type: 'integer' },
+      { key: 'processing_time_seconds', label: 'Tiempo de Procesamiento (seg)', type: 'number' },
+      { key: 'started_at', label: 'Inicio del Procesamiento', type: 'datetime' },
+      { key: 'completed_at', label: 'Fin del Procesamiento', type: 'datetime' },
+      { key: 'results_summary__total', label: 'Total Procesados', type: 'integer' },
+      { key: 'results_summary__valid', label: 'Emails Válidos', type: 'integer' },
+      { key: 'results_summary__invalid', label: 'Emails Inválidos', type: 'integer' },
+      { key: 'results_summary__risky', label: 'Emails Riesgosos', type: 'integer' },
+      { key: 'results_summary__unknown', label: 'Emails Desconocidos', type: 'integer' },
+      { key: 'success_rate', label: 'Tasa de Éxito (%)', type: 'string' },
+      { key: 'risk_rate', label: 'Tasa de Riesgo (%)', type: 'string' },
+      { key: 'invalid_rate', label: 'Tasa de Inválidos (%)', type: 'string' },
+      { key: 'received_at', label: 'Fecha de Recepción', type: 'datetime' },
+      { key: 'action_urls__view_results', label: 'URL de Resultados', type: 'string' },
+      { key: 'action_urls__download_csv', label: 'Descargar CSV', type: 'string' },
+      { key: 'action_urls__download_json', label: 'Descargar JSON', type: 'string' },
     ],
   },
 };

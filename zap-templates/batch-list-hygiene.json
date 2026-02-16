@@ -1,0 +1,69 @@
+{
+  "name": "Clean Email Lists Automatically",
+  "description": "Upload a CSV file and automatically validate all emails, then export a clean list. Perfect for list hygiene before campaigns.",
+  "category": "List Management",
+  "apps": ["mailsafepro", "google_drive", "dropbox", "google_sheets"],
+  "trigger": {
+    "app": "google_drive",
+    "action": "new_file_in_folder",
+    "description": "When a new CSV file is uploaded to the 'Email Lists' folder",
+    "input_mapping": {
+      "folder": "Email Lists",
+      "file_types": ["csv"]
+    }
+  },
+  "steps": [
+    {
+      "app": "mailsafepro",
+      "action": "batch_validate_enterprise",
+      "description": "Validate all emails in the uploaded file",
+      "input_mapping": {
+        "input_method": "file_url",
+        "file_url": "{{trigger.download_url}}",
+        "file_column": "email",
+        "check_smtp": false,
+        "priority": "normal",
+        "batch_name": "List Hygiene - {{trigger.filename}}"
+      }
+    },
+    {
+      "app": "mailsafepro",
+      "action": "get_batch_status",
+      "description": "Wait for batch to complete (use Delay or Paths)",
+      "input_mapping": {
+        "job_id": "{{step1.job_id}}"
+      }
+    },
+    {
+      "app": "mailsafepro",
+      "action": "get_batch_results",
+      "description": "Get the validation results",
+      "input_mapping": {
+        "job_id": "{{step1.job_id}}",
+        "filter_status": "valid",
+        "page_size": 100
+      }
+    },
+    {
+      "app": "google_sheets",
+      "action": "create_spreadsheet_row",
+      "description": "Export clean emails to Google Sheets",
+      "input_mapping": {
+        "spreadsheet": "Clean Email Lists",
+        "worksheet": "{{trigger.filename}} - Clean",
+        "data": "{{step3.results}}"
+      }
+    }
+  ],
+  "use_cases": [
+    "Marketing teams cleaning lists before campaigns",
+    "Sales teams validating prospect lists",
+    "Data teams maintaining database hygiene"
+  ],
+  "estimated_time_savings": "10-20 hours per month",
+  "roi_metrics": [
+    "Reduce bounce rate by 92%",
+    "Save $50,000+ in wasted marketing spend",
+    "Improve campaign ROI by 30%"
+  ]
+}

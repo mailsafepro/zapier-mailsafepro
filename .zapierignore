@@ -1,2 +1,4 @@
-node_modules/**
-!node_modules/zapier-platform-core/**
+node_modules
+.git
+coverage
+test

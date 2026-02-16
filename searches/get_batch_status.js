@@ -10,7 +10,7 @@ const getBatchStatusSearch = {
   key: 'get_batch_status',
   noun: 'Estado de Batch',
   display: {
-    label: '📊 Get Batch Status',
+    label: 'Get Batch Status',
     description:
       'Get the current status of a batch validation, including progress, estimated time, and partial metrics.',
   },
@@ -21,17 +21,17 @@ const getBatchStatusSearch = {
         key: 'job_id',
         type: 'string',
         required: true,
-        label: '🆔 ID del Batch',
-        helpText: 'El identificador único del batch de validación (obtenido al crear el batch)',
-        placeholder: 'batch_550e8400-e29b-41d4-a716-446655440000',
+        label: 'Batch ID',
+        helpText: 'The unique identifier of the batch validation (obtained when creating the batch)',
+        dynamic: 'batch_list_dropdown.id.name',
       },
       {
         key: 'include_partial_results',
         type: 'boolean',
         required: false,
         default: 'false',
-        label: '📊 Incluir Resultados Parciales',
-        helpText: 'Incluir estadísticas de los emails ya procesados',
+        label: 'Include Partial Results',
+        helpText: 'Include statistics for emails already processed',
       },
     ],
 
@@ -46,7 +46,7 @@ const getBatchStatusSearch = {
 
       try {
         const response = await z.request({
-          url: `https://api.mailsafepro.com/v1/validate/batch/${cleanJobId}/status`,
+          url: `https://api.mailsafepro.es/jobs/${cleanJobId}`,
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -58,6 +58,7 @@ const getBatchStatusSearch = {
             include_partial: include_partial_results ? 'true' : 'false',
           },
           timeout: 15000,
+          skipThrowForStatus: true,
         });
 
         switch (response.status) {
@@ -126,10 +127,10 @@ const getBatchStatusSearch = {
           action_urls: {
             view_results:
               statusData.status === 'completed'
-                ? `https://api.mailsafepro.com/v1/validate/batch/${cleanJobId}/results`
+                ? `https://api.mailsafepro.es/jobs/${cleanJobId}/results`
                 : null,
             cancel_batch: ['queued', 'processing'].includes(statusData.status)
-              ? `https://api.mailsafepro.com/v1/validate/batch/${cleanJobId}/cancel`
+              ? `https://api.mailsafepro.es/jobs/${cleanJobId}/cancel`
               : null,
           },
 
@@ -158,7 +159,7 @@ const getBatchStatusSearch = {
     sample: {
       job_id: 'batch_550e8400-e29b-41d4-a716-446655440000',
       status: 'processing',
-      status_display: '⏳ Procesando',
+      status_display: 'Procesando',
       batch_name: 'Lista de leads - Q1 2024',
       total_emails: 500,
       processed_emails: 250,
@@ -182,35 +183,35 @@ const getBatchStatusSearch = {
       action_urls: {
         view_results: null,
         cancel_batch:
-          'https://api.mailsafepro.com/v1/validate/batch/batch_550e8400-e29b-41d4-a716-446655440000/cancel',
+          'https://api.mailsafepro.es/validate/batch/batch_550e8400-e29b-41d4-a716-446655440000/cancel',
       },
       recommended_next_poll: 30,
     },
 
     outputFields: [
-      { key: 'job_id', label: '🆔 ID del Batch', type: 'string' },
-      { key: 'status', label: '📊 Estado', type: 'string' },
-      { key: 'status_display', label: '📊 Estado (Display)', type: 'string' },
-      { key: 'batch_name', label: '🏷️ Nombre del Batch', type: 'string' },
-      { key: 'total_emails', label: '📧 Total de Emails', type: 'integer' },
-      { key: 'processed_emails', label: '✅ Emails Procesados', type: 'integer' },
-      { key: 'progress_percentage', label: '📈 Progreso (%)', type: 'string' },
-      { key: 'is_complete', label: '🏁 Completado', type: 'boolean' },
-      { key: 'is_processing', label: '⏳ En Proceso', type: 'boolean' },
-      { key: 'is_queued', label: '📋 En Cola', type: 'boolean' },
-      { key: 'started_at', label: '🚀 Inicio', type: 'datetime' },
-      { key: 'estimated_completion', label: '⏱️ Finalización Estimada', type: 'datetime' },
-      { key: 'time_remaining_seconds', label: '⏰ Tiempo Restante (seg)', type: 'integer' },
-      { key: 'time_remaining_display', label: '⏰ Tiempo Restante', type: 'string' },
-      { key: 'queried_at', label: '🔍 Fecha de Consulta', type: 'datetime' },
-      { key: 'partial_results__valid', label: '✅ Válidos (Parcial)', type: 'integer' },
-      { key: 'partial_results__invalid', label: '❌ Inválidos (Parcial)', type: 'integer' },
-      { key: 'partial_results__risky', label: '⚠️ Riesgosos (Parcial)', type: 'integer' },
-      { key: 'queue_position', label: '📊 Posición en Cola', type: 'integer' },
-      { key: 'priority', label: '🎯 Prioridad', type: 'string' },
-      { key: 'action_urls__view_results', label: '🔗 URL de Resultados', type: 'string' },
-      { key: 'action_urls__cancel_batch', label: '🛑 URL para Cancelar', type: 'string' },
-      { key: 'recommended_next_poll', label: '⏱️ Próximo Poll (seg)', type: 'integer' },
+      { key: 'job_id', label: 'ID del Batch', type: 'string' },
+      { key: 'status', label: 'Estado', type: 'string' },
+      { key: 'status_display', label: 'Estado (Display)', type: 'string' },
+      { key: 'batch_name', label: 'Nombre del Batch', type: 'string' },
+      { key: 'total_emails', label: 'Total de Emails', type: 'integer' },
+      { key: 'processed_emails', label: 'Emails Procesados', type: 'integer' },
+      { key: 'progress_percentage', label: 'Progreso (%)', type: 'string' },
+      { key: 'is_complete', label: 'Completado', type: 'boolean' },
+      { key: 'is_processing', label: 'En Proceso', type: 'boolean' },
+      { key: 'is_queued', label: 'En Cola', type: 'boolean' },
+      { key: 'started_at', label: 'Inicio', type: 'datetime' },
+      { key: 'estimated_completion', label: 'Finalización Estimada', type: 'datetime' },
+      { key: 'time_remaining_seconds', label: 'Tiempo Restante (seg)', type: 'integer' },
+      { key: 'time_remaining_display', label: 'Tiempo Restante', type: 'string' },
+      { key: 'queried_at', label: 'Fecha de Consulta', type: 'datetime' },
+      { key: 'partial_results__valid', label: 'Válidos (Parcial)', type: 'integer' },
+      { key: 'partial_results__invalid', label: 'Inválidos (Parcial)', type: 'integer' },
+      { key: 'partial_results__risky', label: 'Riesgosos (Parcial)', type: 'integer' },
+      { key: 'queue_position', label: 'Posición en Cola', type: 'integer' },
+      { key: 'priority', label: 'Prioridad', type: 'string' },
+      { key: 'action_urls__view_results', label: 'URL de Resultados', type: 'string' },
+      { key: 'action_urls__cancel_batch', label: 'URL para Cancelar', type: 'string' },
+      { key: 'recommended_next_poll', label: 'Próximo Poll (seg)', type: 'integer' },
     ],
   },
 };
@@ -218,14 +219,14 @@ const getBatchStatusSearch = {
 // Funciones auxiliares
 function getStatusDisplay(status) {
   const displays = {
-    queued: '📋 En Cola',
-    processing: '⏳ Procesando',
-    completed: '✅ Completado',
-    failed: '❌ Fallido',
-    cancelled: '🛑 Cancelado',
-    partial: '⚠️ Parcialmente Completado',
+    queued: 'En Cola',
+    processing: 'Procesando',
+    completed: 'Completado',
+    failed: 'Fallido',
+    cancelled: 'Cancelado',
+    partial: 'Parcialmente Completado',
   };
-  return displays[status] || `❓ ${status}`;
+  return displays[status] || status;
 }
 
 function formatTimeRemaining(ms) {

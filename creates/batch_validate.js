@@ -7,9 +7,9 @@ const batchValidateCreate = {
   key: 'batch_validate_enterprise',
   noun: 'Validación Batch Avanzada',
   display: {
-    label: '📊 Validación Batch Avanzada',
+    label: 'Batch Validation (Enterprise)',
     description:
-      'Valida lotes grandes de emails con seguimiento en tiempo real, métricas detalladas y múltiples formatos de entrada.',
+      'Validate large batches of emails with real-time tracking, detailed metrics, and multiple input formats.',
   },
   operation: {
     inputFields: [
@@ -17,12 +17,12 @@ const batchValidateCreate = {
         key: 'input_method',
         type: 'string',
         required: true,
-        label: '📥 Método de Entrada',
+        label: 'Método de Entrada',
         helpText: 'Seleccione cómo proporcionar los emails para validación',
         choices: {
-          text_list: '📝 Lista de textos (emails separados por comas)',
-          file_url: '🔗 URL de archivo remoto',
-          direct_emails: '👥 Array de emails directo',
+          text_list: 'Lista de textos (emails separados por comas)',
+          file_url: 'URL de archivo remoto',
+          direct_emails: 'Array de emails directo',
         },
         default: 'text_list',
         altersDynamicFields: true,
@@ -31,7 +31,7 @@ const batchValidateCreate = {
         key: 'emails',
         type: 'string',
         required: false,
-        label: '📧 Lista de Emails',
+        label: ' Lista de Emails',
         helpText:
           'Emails separados por comas, puntos y coma o saltos de línea. Máximo 1000 emails por lote.',
         placeholder: 'usuario1@ejemplo.com, usuario2@dominio.com, usuario3@test.org',
@@ -43,7 +43,7 @@ const batchValidateCreate = {
         type: 'string',
         list: true,
         required: false,
-        label: '👥 Array de Emails Directos',
+        label: ' Array de Emails Directos',
         helpText: 'Lista directa de emails para validación batch',
         placeholder: 'usuario@ejemplo.com',
         // Same as above: removed dependsOn
@@ -52,7 +52,7 @@ const batchValidateCreate = {
         key: 'file_url',
         type: 'string',
         required: false,
-        label: '🔗 URL de Archivo',
+        label: ' URL de Archivo',
         helpText:
           'URL a archivo CSV, TXT o ZIP con lista de emails. Formatos soportados: .csv, .txt, .zip',
         placeholder: 'https://ejemplo.com/lista-emails.csv',
@@ -62,7 +62,7 @@ const batchValidateCreate = {
         key: 'file_column',
         type: 'string',
         required: false,
-        label: '📋 Columna de Emails (CSV)',
+        label: ' Columna de Emails (CSV)',
         helpText:
           'Nombre de la columna que contiene los emails en archivos CSV. Si está vacío, se detecta automáticamente.',
         placeholder: 'email, correo, contact_email',
@@ -73,7 +73,7 @@ const batchValidateCreate = {
         type: 'boolean',
         required: false,
         default: 'false',
-        label: '✅ Verificación SMTP',
+        label: ' Verificación SMTP',
         helpText: 'Realizar verificación SMTP real en cada email (más lento pero más preciso)',
       },
       {
@@ -81,7 +81,7 @@ const batchValidateCreate = {
         type: 'boolean',
         required: false,
         default: 'false',
-        label: '🔍 Registros DNS Completos',
+        label: ' Registros DNS Completos',
         helpText: 'Incluir registros SPF, DKIM y DMARC completos en los resultados',
       },
       {
@@ -89,19 +89,19 @@ const batchValidateCreate = {
         type: 'string',
         required: false,
         default: 'normal',
-        label: '🎯 Prioridad de Procesamiento',
+        label: ' Prioridad de Procesamiento',
         helpText: 'Velocidad de procesamiento del batch (ENTERPRISE solo para alta prioridad)',
         choices: {
-          low: '🐢 Baja (hasta 24 horas)',
-          normal: '🚶 Normal (hasta 6 horas)',
-          high: '🚀 Alta (hasta 1 hora - ENTERPRISE only)',
+          low: 'Baja (hasta 24 horas)',
+          normal: 'Normal (hasta 6 horas)',
+          high: 'Alta (hasta 1 hora - ENTERPRISE only)',
         },
       },
       {
         key: 'callback_url',
         type: 'string',
         required: false,
-        label: '📞 URL de Callback',
+        label: ' URL de Callback',
         helpText: 'URL para notificación cuando el batch esté completo (Webhook)',
         placeholder: 'https://tu-dominio.com/webhook/batch-complete',
       },
@@ -109,7 +109,7 @@ const batchValidateCreate = {
         key: 'batch_name',
         type: 'string',
         required: false,
-        label: '🏷️ Nombre del Lote',
+        label: 'Nombre del Lote',
         helpText: 'Nombre identificativo para este batch de validación',
         placeholder: 'Lista de clientes - Noviembre 2024',
       },
@@ -191,14 +191,16 @@ const batchValidateCreate = {
           }
           try {
             const url = new URL(file_url);
-            if (!['http:', 'https:'].includes(url.protocol)) {
-              throw new z.errors.Error(
-                'Solo se permiten URLs HTTP y HTTPS',
-                'INVALID_URL_PROTOCOL'
-              );
-            }
           } catch {
-            throw new z.errors.Error('URL de archivo inválida', 'INVALID_FILE_URL');
+            throw new z.errors.Error('Invalid file URL provided', 'INVALID_FILE_URL');
+          }
+
+          const url = new URL(file_url);
+          if (!['http:', 'https:'].includes(url.protocol)) {
+            throw new z.errors.Error(
+              'Only HTTP and HTTPS URLs are allowed',
+              'INVALID_URL_PROTOCOL'
+            );
           }
           break;
 
@@ -217,21 +219,24 @@ const batchValidateCreate = {
         ...(batch_name && { batch_name }),
       };
 
+      // ✅ Schema Alignment Fix: Setting explicit source
       if (input_method === 'text_list' || input_method === 'direct_emails') {
+        payload.source = 'list';
         payload.emails = processedEmails;
         totalEmails = processedEmails.length;
       } else if (input_method === 'file_url') {
+        payload.source = 'url';
         payload.file_url = file_url;
         if (file_column) {
-          payload.column = file_column;
+          payload.file_column = file_column;
         }
-        totalEmails = 100; // Valor estimado para batch con archivo
+        totalEmails = 100; // Estimated
       }
 
       let response;
       try {
         response = await z.request({
-          url: 'https://api.mailsafepro.com/v1/validate/batch',
+          url: 'https://api.mailsafepro.es/jobs',
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -313,8 +318,7 @@ const batchValidateCreate = {
         }
         default:
           throw new z.errors.Error(
-            `Error inesperado del servidor: ${response.status} - ${
-              response.json?.detail || 'Contacte soporte'
+            `Error inesperado del servidor: ${response.status} - ${response.json?.detail || 'Contacte soporte'
             }`,
             'SERVER_ERROR'
           );
@@ -347,15 +351,15 @@ const batchValidateCreate = {
           include_raw_dns,
           priority,
         },
-        tracking_url: `https://api.mailsafepro.com/v1/validate/batch/${result.job_id}/status`,
-        results_url: `https://api.mailsafepro.com/v1/validate/batch/${result.job_id}/results`,
+        tracking_url: `https://api.mailsafepro.es/jobs/${result.job_id}`,
+        results_url: `https://api.mailsafepro.es/jobs/${result.job_id}/results`,
         can_poll_status: true,
         recommended_poll_interval: getPollInterval(priority),
         ...(callback_url && { callback_url }),
         ...(batch_name && { batch_name }),
       };
 
-      return [enrichedResult];
+      return enrichedResult;
     },
 
     sample: {
@@ -371,9 +375,9 @@ const batchValidateCreate = {
         priority: 'normal',
       },
       tracking_url:
-        'https://api.mailsafepro.com/v1/validate/batch/batch_550e8400-e29b-41d4-a716-446655440000/status',
+        'https://api.mailsafepro.es/jobs/batch_550e8400-e29b-41d4-a716-446655440000',
       results_url:
-        'https://api.mailsafepro.com/v1/validate/batch/batch_550e8400-e29b-41d4-a716-446655440000/results',
+        'https://api.mailsafepro.es/jobs/batch_550e8400-e29b-41d4-a716-446655440000/results',
       can_poll_status: true,
       recommended_poll_interval: 300,
       batch_name: 'Lista de leads - Q1 2024',
@@ -383,41 +387,41 @@ const batchValidateCreate = {
     },
 
     outputFields: [
-      { key: 'job_id', label: '🆔 ID del Trabajo Batch', type: 'string' },
-      { key: 'batch_name', label: '🏷️ Nombre del Lote', type: 'string' },
-      { key: 'status', label: '📊 Estado del Procesamiento', type: 'string' },
-      { key: 'submitted_at', label: '📅 Fecha de Envío', type: 'datetime' },
+      { key: 'job_id', label: 'ID del Trabajo Batch', type: 'string' },
+      { key: 'batch_name', label: 'Nombre del Lote', type: 'string' },
+      { key: 'status', label: 'Estado del Procesamiento', type: 'string' },
+      { key: 'submitted_at', label: 'Fecha de Envío', type: 'datetime' },
       {
         key: 'estimated_completion_time',
-        label: '⏱️ Tiempo Estimado de Finalización',
+        label: 'Tiempo Estimado de Finalización',
         type: 'datetime',
       },
       {
         key: 'estimated_processing_time',
-        label: '🕒 Tiempo Estimado de Procesamiento (segundos)',
+        label: 'Tiempo Estimado de Procesamiento (segundos)',
         type: 'integer',
       },
-      { key: 'input_method', label: '📥 Método de Entrada Utilizado', type: 'string' },
-      { key: 'total_emails_estimated', label: '📧 Total de Emails Estimado', type: 'integer' },
+      { key: 'input_method', label: 'Método de Entrada Utilizado', type: 'string' },
+      { key: 'total_emails_estimated', label: 'Total de Emails Estimado', type: 'integer' },
       {
         key: 'validation_options__check_smtp',
-        label: '🔄 Verificación SMTP Solicitada',
+        label: 'Verificación SMTP Solicitada',
         type: 'boolean',
       },
-      { key: 'validation_options__include_raw_dns', label: '🔍 DNS Raw Incluido', type: 'boolean' },
+      { key: 'validation_options__include_raw_dns', label: 'DNS Raw Incluido', type: 'boolean' },
       {
         key: 'validation_options__priority',
-        label: '🎯 Prioridad de Procesamiento',
+        label: 'Prioridad de Procesamiento',
         type: 'string',
       },
-      { key: 'tracking_url', label: '📍 URL de Seguimiento', type: 'string' },
-      { key: 'results_url', label: '📋 URL de Resultados', type: 'string' },
-      { key: 'callback_url', label: '📞 URL de Callback', type: 'string' },
-      { key: 'queue_position', label: '📊 Posición en Cola', type: 'integer' },
-      { key: 'can_poll_status', label: '🔄 Permite Consulta de Estado', type: 'boolean' },
+      { key: 'tracking_url', label: 'URL de Seguimiento', type: 'string' },
+      { key: 'results_url', label: 'URL de Resultados', type: 'string' },
+      { key: 'callback_url', label: 'URL de Callback', type: 'string' },
+      { key: 'queue_position', label: 'Posición en Cola', type: 'integer' },
+      { key: 'can_poll_status', label: 'Permite Consulta de Estado', type: 'boolean' },
       {
         key: 'recommended_poll_interval',
-        label: '⏰ Intervalo Recomendado para Polling (segundos)',
+        label: 'Intervalo Recomendado para Polling (segundos)',
         type: 'integer',
       },
     ],
@@ -431,8 +435,8 @@ function calculateEstimatedCompletion(totalEmails, priority, checkSmtp) {
     typeof totalEmails === 'number'
       ? totalEmails
       : typeof totalEmails === 'string' && !isNaN(totalEmails)
-      ? parseInt(totalEmails)
-      : 100;
+        ? parseInt(totalEmails)
+        : 100;
 
   const baseTimePerEmail = checkSmtp ? 10 : 2; // segundos por email
   const priorityMultiplier = { low: 1.5, normal: 1.0, high: 0.5 }[priority] || 1.0;

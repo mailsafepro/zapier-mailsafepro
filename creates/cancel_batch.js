@@ -10,7 +10,7 @@ const cancelBatchCreate = {
   key: 'cancel_batch',
   noun: 'Cancelar Batch',
   display: {
-    label: '🛑 Cancel Batch Validation',
+    label: 'Cancel Batch Validation',
     description:
       'Cancel a batch validation that is queued or in progress. Already processed emails are preserved.',
   },
@@ -21,25 +21,26 @@ const cancelBatchCreate = {
         key: 'job_id',
         type: 'string',
         required: true,
-        label: '🆔 ID del Batch',
-        helpText: 'El identificador único del batch a cancelar',
+        label: 'Batch ID',
+        helpText: 'The unique identifier of the batch to cancel',
         placeholder: 'batch_550e8400-e29b-41d4-a716-446655440000',
+        dynamic: 'batch_list_dropdown.id.name',
       },
       {
         key: 'reason',
         type: 'string',
         required: false,
-        label: '📝 Motivo de Cancelación',
-        helpText: 'Razón opcional para cancelar el batch (para auditoría)',
-        placeholder: 'Lista de emails actualizada, ya no necesario',
+        label: 'Cancellation Reason',
+        helpText: 'Optional reason for cancelling the batch (for audit purposes)',
+        placeholder: 'Email list updated, no longer needed',
       },
       {
         key: 'preserve_partial_results',
         type: 'boolean',
         required: false,
         default: 'true',
-        label: '💾 Conservar Resultados Parciales',
-        helpText: 'Mantener los resultados de los emails ya procesados',
+        label: 'Preserve Partial Results',
+        helpText: 'Keep results for emails already processed',
       },
     ],
 
@@ -54,7 +55,7 @@ const cancelBatchCreate = {
 
       try {
         const response = await z.request({
-          url: `https://api.mailsafepro.com/v1/validate/batch/${cleanJobId}/cancel`,
+          url: `https://api.mailsafepro.es/jobs/${cleanJobId}/cancel`,
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -115,7 +116,7 @@ const cancelBatchCreate = {
 
           // Estado final
           final_status: 'cancelled',
-          status_display: '🛑 Cancelado',
+          status_display: 'Cancelado',
 
           // Información de resultados parciales si existen
           ...(cancelData.partial_results && {
@@ -130,9 +131,9 @@ const cancelBatchCreate = {
           // URLs de acción
           action_urls: {
             view_partial_results: preserve_partial_results
-              ? `https://api.mailsafepro.com/v1/validate/batch/${cleanJobId}/results`
+              ? `https://api.mailsafepro.es/jobs/${cleanJobId}/results`
               : null,
-            create_new_batch: 'https://api.mailsafepro.com/v1/validate/batch',
+            create_new_batch: 'https://api.mailsafepro.es/jobs',
           },
         };
 
@@ -160,7 +161,7 @@ const cancelBatchCreate = {
       cancellation_reason: 'Lista de emails actualizada',
       partial_results_preserved: true,
       final_status: 'cancelled',
-      status_display: '🛑 Cancelado',
+      status_display: 'Cancelado',
       original_total_emails: 500,
       processed_before_cancel: 250,
       partial_summary: {
@@ -171,30 +172,30 @@ const cancelBatchCreate = {
       },
       action_urls: {
         view_partial_results:
-          'https://api.mailsafepro.com/v1/validate/batch/batch_550e8400-e29b-41d4-a716-446655440000/results',
-        create_new_batch: 'https://api.mailsafepro.com/v1/validate/batch',
+          'https://api.mailsafepro.es/validate/batch/batch_550e8400-e29b-41d4-a716-446655440000/results',
+        create_new_batch: 'https://api.mailsafepro.es/validate/batch',
       },
     },
 
     outputFields: [
-      { key: 'job_id', label: '🆔 ID del Batch', type: 'string' },
-      { key: 'cancelled_at', label: '🛑 Fecha de Cancelación', type: 'datetime' },
-      { key: 'cancellation_reason', label: '📝 Motivo', type: 'string' },
-      { key: 'partial_results_preserved', label: '💾 Resultados Preservados', type: 'boolean' },
-      { key: 'final_status', label: '📊 Estado Final', type: 'string' },
-      { key: 'status_display', label: '📊 Estado (Display)', type: 'string' },
-      { key: 'original_total_emails', label: '📧 Total Original', type: 'integer' },
-      { key: 'processed_before_cancel', label: '✅ Procesados Antes de Cancelar', type: 'integer' },
-      { key: 'partial_summary__processed', label: '📊 Procesados (Parcial)', type: 'integer' },
-      { key: 'partial_summary__valid', label: '✅ Válidos (Parcial)', type: 'integer' },
-      { key: 'partial_summary__invalid', label: '❌ Inválidos (Parcial)', type: 'integer' },
-      { key: 'partial_summary__risky', label: '⚠️ Riesgosos (Parcial)', type: 'integer' },
+      { key: 'job_id', label: 'ID del Batch', type: 'string' },
+      { key: 'cancelled_at', label: 'Fecha de Cancelación', type: 'datetime' },
+      { key: 'cancellation_reason', label: 'Motivo', type: 'string' },
+      { key: 'partial_results_preserved', label: 'Resultados Preservados', type: 'boolean' },
+      { key: 'final_status', label: 'Estado Final', type: 'string' },
+      { key: 'status_display', label: 'Estado (Display)', type: 'string' },
+      { key: 'original_total_emails', label: 'Total Original', type: 'integer' },
+      { key: 'processed_before_cancel', label: 'Procesados Antes de Cancelar', type: 'integer' },
+      { key: 'partial_summary__processed', label: 'Procesados (Parcial)', type: 'integer' },
+      { key: 'partial_summary__valid', label: 'Válidos (Parcial)', type: 'integer' },
+      { key: 'partial_summary__invalid', label: 'Inválidos (Parcial)', type: 'integer' },
+      { key: 'partial_summary__risky', label: 'Riesgosos (Parcial)', type: 'integer' },
       {
         key: 'action_urls__view_partial_results',
-        label: '🔗 Ver Resultados Parciales',
+        label: 'Ver Resultados Parciales',
         type: 'string',
       },
-      { key: 'action_urls__create_new_batch', label: '🔗 Crear Nuevo Batch', type: 'string' },
+      { key: 'action_urls__create_new_batch', label: 'Crear Nuevo Batch', type: 'string' },
     ],
   },
 };

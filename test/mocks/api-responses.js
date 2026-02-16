@@ -43,7 +43,7 @@ const mockBatchCreateResponse = {
   submitted_at: '2024-01-15T10:00:00.000Z',
   estimated_completion_time: '2024-01-15T10:30:00.000Z',
   total_emails_estimated: 100,
-  tracking_url: 'https://api.mailsafepro.com/v1/validate/batch/batch_test_123456/status',
+  tracking_url: 'https://api.mailsafepro.es/validate/batch/batch_test_123456/status',
   queue_position: 5,
 };
 

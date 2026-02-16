@@ -4,7 +4,7 @@ jest.mock('jwt-decode', () => ({
 }));
 
 const authentication = require('../../authentication');
-const validateEmailTrigger = require('../../triggers/validate_email');
+const validateEmailCreate = require('../../creates/validate_email');
 const batchValidateCreate = require('../../creates/batch_validate');
 const getUsageSearch = require('../../searches/get_usage');
 const { createMockBundle, createMockResponse } = require('../mocks/zapier-mocks');
@@ -86,8 +86,8 @@ describe('End-to-End Integration Tests', () => {
         })
       );
 
-      const validationResult = await validateEmailTrigger.operation.perform(z, bundle);
-      expect(validationResult[0].valid).toBe(true);
+      const validationResult = await validateEmailCreate.operation.perform(z, bundle);
+      expect(validationResult.valid).toBe(true);
 
       // 3. Batch validation
       bundle.inputData = {
@@ -180,8 +180,8 @@ describe('End-to-End Integration Tests', () => {
         validation_timeout: 30,
       };
 
-      await expect(validateEmailTrigger.operation.perform(z, bundle)).rejects.toThrow(
-        /Servicio temporalmente no disponible/
+      await expect(validateEmailCreate.operation.perform(z, bundle)).rejects.toThrow(
+        /Service temporarily unavailable/
       );
     });
 
@@ -219,8 +219,8 @@ describe('End-to-End Integration Tests', () => {
         })
       );
 
-      const validationResult = await validateEmailTrigger.operation.perform(z, bundle);
-      expect(validationResult[0].valid).toBe(true);
+      const validationResult = await validateEmailCreate.operation.perform(z, bundle);
+      expect(validationResult.valid).toBe(true);
     });
   });
 
@@ -243,8 +243,8 @@ describe('End-to-End Integration Tests', () => {
         validation_timeout: 30,
       };
 
-      await expect(validateEmailTrigger.operation.perform(z, bundle)).rejects.toThrow(
-        'Límite de tasa excedido'
+      await expect(validateEmailCreate.operation.perform(z, bundle)).rejects.toThrow(
+        'Rate limit exceeded'
       );
 
       // Test rate limiting on usage query
@@ -337,8 +337,8 @@ describe('End-to-End Integration Tests', () => {
           email,
           validation_timeout: 30,
         };
-        const result = await validateEmailTrigger.operation.perform(z, bundle);
-        expect(result[0].email).toBe(email);
+        const result = await validateEmailCreate.operation.perform(z, bundle);
+        expect(result.email).toBe(email);
       }
     });
 

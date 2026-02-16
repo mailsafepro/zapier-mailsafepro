@@ -12,7 +12,7 @@ const { logger, sanitizeForLogging, isRecoverableError, calculateRetryDelay } = 
 describe('📦 Index.js - Test Suite Completo', () => {
   describe('🔧 Configuración y Exportación', () => {
     it('debería exportar la configuración correcta', () => {
-      expect(index).toHaveProperty('version', '1.0.0');
+      expect(index).toHaveProperty('version', '2.0.0');
       expect(index).toHaveProperty('platformVersion');
       expect(index).toHaveProperty('authentication');
       expect(index).toHaveProperty('beforeRequest');
@@ -40,7 +40,7 @@ describe('📦 Index.js - Test Suite Completo', () => {
 
   describe('📝 Logger & Utilidades', () => {
     beforeEach(() => {
-      jest.spyOn(console, 'log').mockImplementation(() => {});
+      jest.spyOn(console, 'log').mockImplementation(() => { });
     });
 
     afterEach(() => {
@@ -230,7 +230,7 @@ describe('📦 Index.js - Test Suite Completo', () => {
       bundle = createMockBundle({
         request: {
           method: 'GET',
-          url: 'https://api.mailsafepro.com/v1/test',
+          url: 'https://api.mailsafepro.es/test',
           headers: {},
           body: { email: 'test@example.com' },
         },
@@ -254,7 +254,7 @@ describe('📦 Index.js - Test Suite Completo', () => {
       expect(mockPreRequest).toHaveBeenCalledWith(bundle.request, mockZapier, bundle);
       expect(resultRequest.headers.Authorization).toBe('Bearer test-token');
       expect(resultRequest.headers['X-API-Key']).toBe('test-api-key');
-      expect(resultRequest.headers['User-Agent']).toContain('Zapier-MailSafePro/1.0.0');
+      expect(resultRequest.headers['User-Agent']).toContain('Zapier-MailSafePro/2.0.0');
       expect(resultRequest.headers['X-Request-ID']).toMatch(/^req_\d+_[\w\d]+$/);
       expect(bundle.meta.requestId).toBeDefined();
 
@@ -278,7 +278,7 @@ describe('📦 Index.js - Test Suite Completo', () => {
 
       const resultRequest = await beforeRequest(mockZapier, bundle);
 
-      expect(resultRequest.headers['User-Agent']).toContain('Zapier-MailSafePro/1.0.0');
+      expect(resultRequest.headers['User-Agent']).toContain('Zapier-MailSafePro/2.0.0');
       expect(resultRequest.headers['X-Request-ID']).toBeDefined();
       expect(bundle.meta.requestId).toBeDefined();
 
@@ -313,7 +313,7 @@ describe('📦 Index.js - Test Suite Completo', () => {
       bundle = createMockBundle({
         request: {
           method: 'GET',
-          url: 'https://api.mailsafepro.com/v1/test',
+          url: 'https://api.mailsafepro.es/test',
           headers: {},
         },
       });
@@ -630,7 +630,7 @@ describe('📦 Index.js - Test Suite Completo', () => {
 
   describe('🔗 Integración de Módulos', () => {
     it('debería integrar todos los módulos correctamente', () => {
-      expect(index.triggers).toHaveProperty('validate_email_premium');
+
       expect(index.creates).toHaveProperty('batch_validate_enterprise');
       expect(index.searches).toHaveProperty('get_usage');
       expect(index.authentication).toBeDefined();

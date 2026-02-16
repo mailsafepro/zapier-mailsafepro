@@ -92,7 +92,7 @@ describe('Authentication System', () => {
         authMethod: 'api_key',
       });
       expect(z.request).toHaveBeenCalledWith({
-        url: 'https://api.mailsafepro.com/v1/validate/email',
+        url: 'https://api.mailsafepro.es/validate/email',
         method: 'POST',
         headers: {
           'X-API-Key': bundle.inputData.apiKey,

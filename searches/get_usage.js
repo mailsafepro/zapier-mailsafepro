@@ -13,7 +13,7 @@ const getUsageSearch = {
   key: 'get_usage',
   noun: 'Métricas de Uso',
   display: {
-    label: '📊 Get Advanced Usage Metrics',
+    label: 'Get Advanced Usage Metrics',
     description:
       'Get detailed usage metrics, limits, projections, and optimization recommendations.',
   },
@@ -25,15 +25,15 @@ const getUsageSearch = {
         type: 'string',
         required: false,
         default: 'today',
-        label: '📅 Rango de Tiempo',
+        label: 'Rango de Tiempo',
         helpText: 'Período de tiempo para el análisis de uso',
         choices: {
-          today: '📊 Hoy',
-          yesterday: '📅 Ayer',
-          this_week: '🗓️ Esta semana',
-          this_month: '📈 Este mes',
-          last_30_days: '📆 Últimos 30 días',
-          custom: '🎯 Personalizado',
+          today: 'Hoy',
+          yesterday: 'Ayer',
+          this_week: 'Esta semana',
+          this_month: 'Este mes',
+          last_30_days: 'Últimos 30 días',
+          custom: 'Personalizado',
         },
         altersDynamicFields: true,
       },
@@ -41,14 +41,14 @@ const getUsageSearch = {
         key: 'start_date',
         type: 'datetime',
         required: false,
-        label: '📅 Fecha de Inicio',
+        label: 'Fecha de Inicio',
         helpText: 'Fecha de inicio para análisis personalizado',
       },
       {
         key: 'end_date',
         type: 'datetime',
         required: false,
-        label: '📅 Fecha de Fin',
+        label: 'Fecha de Fin',
         helpText: 'Fecha de fin para análisis personalizado',
       },
       {
@@ -56,7 +56,7 @@ const getUsageSearch = {
         type: 'boolean',
         required: false,
         default: 'true',
-        label: '🔮 Incluir Proyecciones',
+        label: 'Incluir Proyecciones',
         helpText: 'Incluir proyecciones de uso y alertas de límites',
       },
       {
@@ -64,7 +64,7 @@ const getUsageSearch = {
         type: 'boolean',
         required: false,
         default: 'true',
-        label: '💡 Incluir Recomendaciones',
+        label: 'Incluir Recomendaciones',
         helpText: 'Incluir recomendaciones de optimización basadas en el uso',
       },
     ],
@@ -125,7 +125,7 @@ const getUsageSearch = {
 
       try {
         const response = await z.request({
-          url: 'https://api.mailsafepro.com/v1/stats/usage',
+          url: 'https://api.mailsafepro.es/validate/stats/usage',
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -134,11 +134,12 @@ const getUsageSearch = {
             ...(bundle.authData.apiKey
               ? { 'X-API-Key': bundle.authData.apiKey }
               : bundle.authData.jwt
-              ? { Authorization: `Bearer ${bundle.authData.jwt}` }
-              : {}),
+                ? { Authorization: `Bearer ${bundle.authData.jwt}` }
+                : {}),
           },
           params: payload,
           timeout: 15000,
+          skipThrowForStatus: true,
         });
 
         // ===== MANEJO AVANZADO DE RESPUESTAS =====
@@ -328,79 +329,79 @@ const getUsageSearch = {
 
     outputFields: [
       // Información básica del plan
-      { key: 'plan', label: '💎 Plan Actual', type: 'string' },
-      { key: 'usage_today', label: '📊 Uso Hoy', type: 'integer' },
-      { key: 'daily_limit', label: '📈 Límite Diario', type: 'integer' },
-      { key: 'remaining_today', label: '📉 Restante Hoy', type: 'integer' },
+      { key: 'plan', label: ' Plan Actual', type: 'string' },
+      { key: 'usage_today', label: ' Uso Hoy', type: 'integer' },
+      { key: 'daily_limit', label: ' Límite Diario', type: 'integer' },
+      { key: 'remaining_today', label: ' Restante Hoy', type: 'integer' },
       { key: 'usage_percentage', label: '📐 Porcentaje de Uso Hoy', type: 'number' },
-      { key: 'monthly_usage', label: '🗓️ Uso Mensual', type: 'integer' },
-      { key: 'monthly_limit', label: '📅 Límite Mensual', type: 'integer' },
-      { key: 'monthly_remaining', label: '📋 Restante Mensual', type: 'integer' },
-      { key: 'monthly_percentage', label: '📏 Porcentaje de Uso Mensual', type: 'number' },
+      { key: 'monthly_usage', label: '️ Uso Mensual', type: 'integer' },
+      { key: 'monthly_limit', label: ' Límite Mensual', type: 'integer' },
+      { key: 'monthly_remaining', label: ' Restante Mensual', type: 'integer' },
+      { key: 'monthly_percentage', label: ' Porcentaje de Uso Mensual', type: 'number' },
 
       // Metadatos
-      { key: 'queried_at', label: '🔍 Fecha de Consulta', type: 'datetime' },
-      { key: 'time_range', label: '📅 Rango de Tiempo Consultado', type: 'string' },
+      { key: 'queried_at', label: ' Fecha de Consulta', type: 'datetime' },
+      { key: 'time_range', label: ' Rango de Tiempo Consultado', type: 'string' },
 
       // Analytics avanzados
-      { key: 'analytics__average_daily_usage', label: '📊 Uso Diario Promedio', type: 'number' },
-      { key: 'analytics__peak_usage_day', label: '📈 Día de Mayor Uso', type: 'string' },
+      { key: 'analytics__average_daily_usage', label: ' Uso Diario Promedio', type: 'number' },
+      { key: 'analytics__peak_usage_day', label: ' Día de Mayor Uso', type: 'string' },
       { key: 'analytics__peak_usage_value', label: '🔥 Valor de Pico de Uso', type: 'integer' },
-      { key: 'analytics__usage_trend', label: '📉 Tendencia de Uso', type: 'string' },
+      { key: 'analytics__usage_trend', label: ' Tendencia de Uso', type: 'string' },
       {
         key: 'analytics__forecasted_monthly_usage',
         label: '🔮 Uso Mensual Pronosticado',
         type: 'integer',
       },
-      { key: 'analytics__efficiency_score', label: '⭐ Puntuación de Eficiencia', type: 'number' },
-      { key: 'analytics__cost_per_validation', label: '💰 Costo por Validación', type: 'number' },
+      { key: 'analytics__efficiency_score', label: ' Puntuación de Eficiencia', type: 'number' },
+      { key: 'analytics__cost_per_validation', label: ' Costo por Validación', type: 'number' },
 
       // Proyecciones
-      { key: 'projections__days_until_limit', label: '📅 Días Hasta Límite', type: 'number' },
+      { key: 'projections__days_until_limit', label: 'Días Hasta Límite', type: 'number' },
       {
         key: 'projections__projected_end_of_month_usage',
-        label: '🎯 Uso Proyectado Fin de Mes',
+        label: 'Uso Proyectado Fin de Mes',
         type: 'integer',
       },
-      { key: 'projections__will_exceed_limit', label: '🚨 Excederá Límite', type: 'boolean' },
+      { key: 'projections__will_exceed_limit', label: 'Excederá Límite', type: 'boolean' },
       {
         key: 'projections__excess_risk_percentage',
-        label: '⚠️ Porcentaje de Riesgo de Exceso',
+        label: 'Porcentaje de Riesgo de Exceso',
         type: 'number',
       },
       {
         key: 'projections__recommended_daily_cap',
-        label: '🎯 Límite Diario Recomendado',
+        label: 'Límite Diario Recomendado',
         type: 'integer',
       },
 
       // URLs de acción
       {
         key: 'action_urls__upgrade_plan',
-        label: '🚀 URL de Actualización de Plan',
+        label: 'URL de Actualización de Plan',
         type: 'string',
       },
-      { key: 'action_urls__usage_dashboard', label: '📊 URL del Dashboard de Uso', type: 'string' },
+      { key: 'action_urls__usage_dashboard', label: 'URL del Dashboard de Uso', type: 'string' },
       {
         key: 'action_urls__api_documentation',
-        label: '📚 URL de Documentación API',
+        label: 'URL de Documentación API',
         type: 'string',
       },
 
       // Campos para recomendaciones (primer elemento del array)
-      { key: 'recommendations[0]__type', label: '💡 Tipo de Recomendación', type: 'string' },
-      { key: 'recommendations[0]__priority', label: '🎯 Prioridad', type: 'string' },
-      { key: 'recommendations[0]__title', label: '📝 Título', type: 'string' },
-      { key: 'recommendations[0]__description', label: '📋 Descripción', type: 'string' },
-      { key: 'recommendations[0]__impact', label: '📈 Impacto', type: 'string' },
-      { key: 'recommendations[0]__effort', label: '⚡ Esfuerzo', type: 'string' },
-      { key: 'recommendations[0]__action', label: '🎯 Acción', type: 'string' },
+      { key: 'recommendations[0]__type', label: 'Tipo de Recomendación', type: 'string' },
+      { key: 'recommendations[0]__priority', label: 'Prioridad', type: 'string' },
+      { key: 'recommendations[0]__title', label: 'Título', type: 'string' },
+      { key: 'recommendations[0]__description', label: 'Descripción', type: 'string' },
+      { key: 'recommendations[0]__impact', label: 'Impacto', type: 'string' },
+      { key: 'recommendations[0]__effort', label: 'Esfuerzo', type: 'string' },
+      { key: 'recommendations[0]__action', label: 'Acción', type: 'string' },
 
       // Campos para alertas (primer elemento del array)
-      { key: 'alerts[0]__type', label: '🚨 Tipo de Alerta', type: 'string' },
-      { key: 'alerts[0]__message', label: '📢 Mensaje de Alerta', type: 'string' },
-      { key: 'alerts[0]__severity', label: '⚠️ Severidad', type: 'string' },
-      { key: 'alerts[0]__action_required', label: '🔧 Acción Requerida', type: 'boolean' },
+      { key: 'alerts[0]__type', label: 'Tipo de Alerta', type: 'string' },
+      { key: 'alerts[0]__message', label: 'Mensaje de Alerta', type: 'string' },
+      { key: 'alerts[0]__severity', label: 'Severidad', type: 'string' },
+      { key: 'alerts[0]__action_required', label: 'Acción Requerida', type: 'boolean' },
     ],
   },
 };
@@ -555,21 +556,21 @@ function generateUsageAlerts(usageData) {
   if (usage_percentage >= 90) {
     alerts.push({
       type: 'critical',
-      message: `🚨 Uso diario crítico: ${usage_percentage}% del límite alcanzado`,
+      message: `Uso diario crítico: ${usage_percentage}% del límite alcanzado`,
       severity: 'high',
       action_required: true,
     });
   } else if (usage_percentage >= 75) {
     alerts.push({
       type: 'warning',
-      message: `⚠️ Uso diario elevado: ${usage_percentage}% del límite`,
+      message: `Uso diario elevado: ${usage_percentage}% del límite`,
       severity: 'medium',
       action_required: false,
     });
   } else {
     alerts.push({
       type: 'info',
-      message: `✅ Uso estable: ${usage_percentage}% del límite diario`,
+      message: `Uso estable: ${usage_percentage}% del límite diario`,
       severity: 'low',
       action_required: false,
     });
@@ -579,7 +580,7 @@ function generateUsageAlerts(usageData) {
   if (monthly_percentage >= 85) {
     alerts.push({
       type: 'warning',
-      message: `📅 Uso mensual elevado: ${monthly_percentage}% del límite`,
+      message: `Uso mensual elevado: ${monthly_percentage}% del límite`,
       severity: 'medium',
       action_required: false,
     });

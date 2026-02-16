@@ -10,7 +10,7 @@ const getBatchResultsSearch = {
   key: 'get_batch_results',
   noun: 'Resultados de Batch',
   display: {
-    label: '📋 Get Batch Results',
+    label: 'Get Batch Results',
     description:
       'Get detailed results of a completed batch validation with filtering, pagination, and export options.',
   },
@@ -21,22 +21,22 @@ const getBatchResultsSearch = {
         key: 'job_id',
         type: 'string',
         required: true,
-        label: '🆔 ID del Batch',
-        helpText: 'El identificador único del batch de validación completado',
-        placeholder: 'batch_550e8400-e29b-41d4-a716-446655440000',
+        label: 'Batch ID',
+        helpText: 'The unique identifier of the completed batch validation',
+        dynamic: 'batch_list_dropdown.id.name',
       },
       {
         key: 'filter_status',
         type: 'string',
         required: false,
-        label: '🎯 Filtrar por Estado',
-        helpText: 'Filtrar resultados por estado de validación',
+        label: 'Filter by Status',
+        helpText: 'Filter results by validation status',
         choices: {
-          all: '📊 Todos los resultados',
-          valid: '✅ Solo válidos',
-          invalid: '❌ Solo inválidos',
-          risky: '⚠️ Solo riesgosos',
-          unknown: '❓ Solo desconocidos',
+          all: 'All results',
+          valid: 'Valid only',
+          invalid: 'Invalid only',
+          risky: 'Risky only',
+          unknown: 'Unknown only',
         },
         default: 'all',
       },
@@ -44,7 +44,7 @@ const getBatchResultsSearch = {
         key: 'page',
         type: 'integer',
         required: false,
-        label: '📄 Página',
+        label: 'Página',
         helpText: 'Número de página para paginación (empieza en 1)',
         default: '1',
       },
@@ -52,7 +52,7 @@ const getBatchResultsSearch = {
         key: 'page_size',
         type: 'integer',
         required: false,
-        label: '📊 Resultados por Página',
+        label: 'Resultados por Página',
         helpText: 'Cantidad de resultados por página (máximo 100)',
         default: '50',
         choices: {
@@ -66,13 +66,13 @@ const getBatchResultsSearch = {
         key: 'sort_by',
         type: 'string',
         required: false,
-        label: '📈 Ordenar por',
+        label: 'Ordenar por',
         helpText: 'Campo para ordenar los resultados',
         choices: {
-          email: '📧 Email (A-Z)',
-          risk_score: '⚠️ Puntuación de Riesgo',
-          quality_score: '⭐ Puntuación de Calidad',
-          status: '📊 Estado',
+          email: 'Email (A-Z)',
+          risk_score: 'Puntuación de Riesgo',
+          quality_score: 'Puntuación de Calidad',
+          status: 'Estado',
         },
         default: 'email',
       },
@@ -80,11 +80,11 @@ const getBatchResultsSearch = {
         key: 'sort_order',
         type: 'string',
         required: false,
-        label: '🔄 Orden',
+        label: 'Orden',
         helpText: 'Dirección del ordenamiento',
         choices: {
-          asc: '⬆️ Ascendente',
-          desc: '⬇️ Descendente',
+          asc: 'Ascendente',
+          desc: 'Descendente',
         },
         default: 'asc',
       },
@@ -92,7 +92,7 @@ const getBatchResultsSearch = {
         key: 'include_details',
         type: 'boolean',
         required: false,
-        label: '🔍 Incluir Detalles Completos',
+        label: 'Incluir Detalles Completos',
         helpText: 'Incluir información detallada de DNS, SMTP y spam trap para cada email',
         default: 'false',
       },
@@ -119,7 +119,7 @@ const getBatchResultsSearch = {
 
       try {
         const response = await z.request({
-          url: `https://api.mailsafepro.com/v1/validate/batch/${cleanJobId}/results`,
+          url: `https://api.mailsafepro.es/jobs/${cleanJobId}/results`,
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -136,6 +136,7 @@ const getBatchResultsSearch = {
             include_details: include_details ? 'true' : 'false',
           },
           timeout: 30000,
+          skipThrowForStatus: true,
         });
 
         switch (response.status) {
@@ -222,25 +223,23 @@ const getBatchResultsSearch = {
 
           // URLs de exportación
           export_urls: {
-            csv: `https://api.mailsafepro.com/v1/validate/batch/${cleanJobId}/export?format=csv`,
-            json: `https://api.mailsafepro.com/v1/validate/batch/${cleanJobId}/export?format=json`,
-            xlsx: `https://api.mailsafepro.com/v1/validate/batch/${cleanJobId}/export?format=xlsx`,
+            csv: `https://api.mailsafepro.es/jobs/${cleanJobId}/export?format=csv`,
+            json: `https://api.mailsafepro.es/jobs/${cleanJobId}/export?format=json`,
+            xlsx: `https://api.mailsafepro.es/jobs/${cleanJobId}/export?format=xlsx`,
           },
 
           // Navegación
           navigation: {
             next_page_url:
               (resultsData.page || validatedPage) <
-              Math.ceil((resultsData.total || 0) / validatedPageSize)
-                ? `https://api.mailsafepro.com/v1/validate/batch/${cleanJobId}/results?page=${
-                    validatedPage + 1
-                  }&page_size=${validatedPageSize}`
+                Math.ceil((resultsData.total || 0) / validatedPageSize)
+                ? `https://api.mailsafepro.es/jobs/${cleanJobId}/results?page=${validatedPage + 1
+                }&page_size=${validatedPageSize}`
                 : null,
             previous_page_url:
               validatedPage > 1
-                ? `https://api.mailsafepro.com/v1/validate/batch/${cleanJobId}/results?page=${
-                    validatedPage - 1
-                  }&page_size=${validatedPageSize}`
+                ? `https://api.mailsafepro.es/jobs/${cleanJobId}/results?page=${validatedPage - 1
+                }&page_size=${validatedPageSize}`
                 : null,
           },
         };
@@ -317,58 +316,58 @@ const getBatchResultsSearch = {
       ],
       results_count: 50,
       export_urls: {
-        csv: 'https://api.mailsafepro.com/v1/validate/batch/batch_550e8400-e29b-41d4-a716-446655440000/export?format=csv',
-        json: 'https://api.mailsafepro.com/v1/validate/batch/batch_550e8400-e29b-41d4-a716-446655440000/export?format=json',
-        xlsx: 'https://api.mailsafepro.com/v1/validate/batch/batch_550e8400-e29b-41d4-a716-446655440000/export?format=xlsx',
+        csv: 'https://api.mailsafepro.es/jobs/batch_550e8400-e29b-41d4-a716-446655440000/export?format=csv',
+        json: 'https://api.mailsafepro.es/jobs/batch_550e8400-e29b-41d4-a716-446655440000/export?format=json',
+        xlsx: 'https://api.mailsafepro.es/jobs/batch_550e8400-e29b-41d4-a716-446655440000/export?format=xlsx',
       },
       navigation: {
         next_page_url:
-          'https://api.mailsafepro.com/v1/validate/batch/batch_550e8400-e29b-41d4-a716-446655440000/results?page=2&page_size=50',
+          'https://api.mailsafepro.es/jobs/batch_550e8400-e29b-41d4-a716-446655440000/results?page=2&page_size=50',
         previous_page_url: null,
       },
     },
 
     outputFields: [
-      { key: 'job_id', label: '🆔 ID del Batch', type: 'string' },
-      { key: 'queried_at', label: '🔍 Fecha de Consulta', type: 'datetime' },
+      { key: 'job_id', label: 'ID del Batch', type: 'string' },
+      { key: 'queried_at', label: 'Fecha de Consulta', type: 'datetime' },
 
       // Paginación
-      { key: 'pagination__current_page', label: '📄 Página Actual', type: 'integer' },
-      { key: 'pagination__page_size', label: '📊 Tamaño de Página', type: 'integer' },
-      { key: 'pagination__total_results', label: '📈 Total de Resultados', type: 'integer' },
-      { key: 'pagination__total_pages', label: '📑 Total de Páginas', type: 'integer' },
-      { key: 'pagination__has_next_page', label: '➡️ Tiene Siguiente Página', type: 'boolean' },
-      { key: 'pagination__has_previous_page', label: '⬅️ Tiene Página Anterior', type: 'boolean' },
+      { key: 'pagination__current_page', label: 'Página Actual', type: 'integer' },
+      { key: 'pagination__page_size', label: 'Tamaño de Página', type: 'integer' },
+      { key: 'pagination__total_results', label: 'Total de Resultados', type: 'integer' },
+      { key: 'pagination__total_pages', label: 'Total de Páginas', type: 'integer' },
+      { key: 'pagination__has_next_page', label: 'Tiene Siguiente Página', type: 'boolean' },
+      { key: 'pagination__has_previous_page', label: 'Tiene Página Anterior', type: 'boolean' },
 
       // Resumen
-      { key: 'summary__total', label: '📊 Total Procesados', type: 'integer' },
-      { key: 'summary__valid', label: '✅ Válidos', type: 'integer' },
-      { key: 'summary__invalid', label: '❌ Inválidos', type: 'integer' },
-      { key: 'summary__risky', label: '⚠️ Riesgosos', type: 'integer' },
-      { key: 'summary__unknown', label: '❓ Desconocidos', type: 'integer' },
+      { key: 'summary__total', label: 'Total Procesados', type: 'integer' },
+      { key: 'summary__valid', label: 'Válidos', type: 'integer' },
+      { key: 'summary__invalid', label: 'Inválidos', type: 'integer' },
+      { key: 'summary__risky', label: 'Riesgosos', type: 'integer' },
+      { key: 'summary__unknown', label: 'Desconocidos', type: 'integer' },
 
       // Resultados (primer elemento como ejemplo)
-      { key: 'results[]email', label: '📧 Email', type: 'string' },
-      { key: 'results[]status', label: '📊 Estado', type: 'string' },
-      { key: 'results[]valid', label: '✅ Válido', type: 'boolean' },
-      { key: 'results[]risk_score', label: '⚠️ Puntuación de Riesgo', type: 'number' },
-      { key: 'results[]quality_score', label: '⭐ Puntuación de Calidad', type: 'number' },
-      { key: 'results[]risk_level', label: '🔴 Nivel de Riesgo', type: 'string' },
-      { key: 'results[]quality_tier', label: '🏆 Nivel de Calidad', type: 'string' },
-      { key: 'results[]is_safe_to_send', label: '✉️ Seguro para Enviar', type: 'boolean' },
-      { key: 'results[]provider', label: '🏢 Proveedor', type: 'string' },
+      { key: 'results[]email', label: 'Email', type: 'string' },
+      { key: 'results[]status', label: 'Estado', type: 'string' },
+      { key: 'results[]valid', label: 'Válido', type: 'boolean' },
+      { key: 'results[]risk_score', label: 'Puntuación de Riesgo', type: 'number' },
+      { key: 'results[]quality_score', label: 'Puntuación de Calidad', type: 'number' },
+      { key: 'results[]risk_level', label: 'Nivel de Riesgo', type: 'string' },
+      { key: 'results[]quality_tier', label: 'Nivel de Calidad', type: 'string' },
+      { key: 'results[]is_safe_to_send', label: 'Seguro para Enviar', type: 'boolean' },
+      { key: 'results[]provider', label: 'Proveedor', type: 'string' },
 
       // Conteo
-      { key: 'results_count', label: '📊 Resultados en Esta Página', type: 'integer' },
+      { key: 'results_count', label: 'Resultados en Esta Página', type: 'integer' },
 
       // URLs de exportación
-      { key: 'export_urls__csv', label: '📥 Exportar CSV', type: 'string' },
-      { key: 'export_urls__json', label: '📥 Exportar JSON', type: 'string' },
-      { key: 'export_urls__xlsx', label: '📥 Exportar Excel', type: 'string' },
+      { key: 'export_urls__csv', label: 'Exportar CSV', type: 'string' },
+      { key: 'export_urls__json', label: 'Exportar JSON', type: 'string' },
+      { key: 'export_urls__xlsx', label: 'Exportar Excel', type: 'string' },
 
       // Navegación
-      { key: 'navigation__next_page_url', label: '➡️ URL Siguiente Página', type: 'string' },
-      { key: 'navigation__previous_page_url', label: '⬅️ URL Página Anterior', type: 'string' },
+      { key: 'navigation__next_page_url', label: 'URL Siguiente Página', type: 'string' },
+      { key: 'navigation__previous_page_url', label: 'URL Página Anterior', type: 'string' },
     ],
   },
 };

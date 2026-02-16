@@ -1,0 +1,390 @@
+{
+  "description": "Test fixtures for MailSafePro Zapier integration",
+  "emails": {
+    "valid": [
+      {
+        "email": "user@example.com",
+        "description": "Valid standard email",
+        "expected": {
+          "valid": true,
+          "status": "deliverable",
+          "risk_score": 0.1
+        }
+      },
+      {
+        "email": "john.doe@company.co.uk",
+        "description": "Valid email with subdomain and country TLD",
+        "expected": {
+          "valid": true,
+          "status": "deliverable",
+          "risk_score": 0.05
+        }
+      },
+      {
+        "email": "test+tag@gmail.com",
+        "description": "Valid Gmail with plus addressing",
+        "expected": {
+          "valid": true,
+          "status": "deliverable",
+          "risk_score": 0.0
+        }
+      }
+    ],
+    "invalid": [
+      {
+        "email": "invalid-email",
+        "description": "Missing @ and domain",
+        "expected": {
+          "valid": false,
+          "status": "undeliverable"
+        }
+      },
+      {
+        "email": "@example.com",
+        "description": "Missing local part",
+        "expected": {
+          "valid": false,
+          "status": "undeliverable"
+        }
+      },
+      {
+        "email": "user@",
+        "description": "Missing domain",
+        "expected": {
+          "valid": false,
+          "status": "undeliverable"
+        }
+      },
+      {
+        "email": "user@example",
+        "description": "Missing TLD",
+        "expected": {
+          "valid": false,
+          "status": "risky"
+        }
+      }
+    ],
+    "risky": [
+      {
+        "email": "abuse@example.com",
+        "description": "Abuse email",
+        "expected": {
+          "valid": true,
+          "status": "risky",
+          "risk_score": 0.7
+        }
+      },
+      {
+        "email": "spam@domain.com",
+        "description": "Spam-related email",
+        "expected": {
+          "valid": true,
+          "status": "risky",
+          "risk_score": 0.8
+        }
+      },
+      {
+        "email": "temp-mail@example.com",
+        "description": "Temporary email",
+        "expected": {
+          "valid": true,
+          "status": "risky",
+          "risk_score": 0.9
+        }
+      }
+    ],
+    "spamTraps": [
+      {
+        "email": "honeypot@example.com",
+        "description": "Known spam trap",
+        "expected": {
+          "valid": true,
+          "status": "undeliverable",
+          "risk_score": 1.0,
+          "is_spam_trap": true
+        }
+      }
+    ],
+    "edgeCases": [
+      {
+        "email": "a@b.co",
+        "description": "Shortest valid email",
+        "expected": {
+          "valid": true,
+          "status": "deliverable"
+        }
+      },
+      {
+        "email": "a@b.co",
+        "description": "Minimum length",
+        "expected": {
+          "valid": true
+        }
+      },
+      {
+        "email": "a@b.co",
+        "description": "Unicode domain",
+        "expected": {
+          "valid": true
+        }
+      },
+      {
+        "email": "a@b.co",
+        "description": "New TLD",
+        "expected": {
+          "valid": true
+        }
+      }
+    ],
+    "boundary": [
+      {
+        "email": "a@" + "b".repeat(250) + ".co",
+        "description": "Maximum length email (254 chars)",
+        "expected": {
+          "valid": true
+        }
+      },
+      {
+        "email": "a@" + "b".repeat(251) + ".co",
+        "description": "Exceeds maximum length (255 chars)",
+        "expected": {
+          "valid": false,
+          "status": "undeliverable"
+        }
+      }
+    ],
+    "unicode": [
+      {
+        "email": "user@例え.jp",
+        "description": "Japanese domain",
+        "expected": {
+          "valid": true
+        }
+      },
+      {
+        "email": "user@مثال.إختبار",
+        "description": "Arabic domain",
+        "expected": {
+          "valid": true
+        }
+      },
+      {
+        "email": "user@例え.中国",
+        "description": "Chinese domain",
+        "expected": {
+          "valid": true
+        }
+      }
+    ],
+    "specialCharacters": [
+      {
+        "email": "user!name@example.com",
+        "description": "Exclamation mark in local part",
+        "expected": {
+          "valid": true
+        }
+      },
+      {
+        "email": "user#tag@example.com",
+        "description": "Hash in local part",
+        "expected": {
+          "valid": true
+        }
+      },
+      {
+        "email": "user$test@example.com",
+        "description": "Dollar sign in local part",
+        "expected": {
+          "valid": true
+        }
+      },
+      {
+        "email": "user%tag@example.com",
+        "description": "Percent sign in local part",
+        "expected": {
+          "valid": true
+        }
+      }
+    ]
+  },
+  "batches": {
+    "small": {
+      "size": 10,
+      "emails": [
+        "user1@example.com",
+        "user2@example.com",
+        "user3@example.com",
+        "user4@example.com",
+        "user5@example.com",
+        "user6@example.com",
+        "user7@example.com",
+        "user8@example.com",
+        "user9@example.com",
+        "user10@example.com"
+      ]
+    },
+    "medium": {
+      "size": 50,
+      "emails": []
+    },
+    "large": {
+      "size": 100,
+      "emails": []
+    },
+    "extraLarge": {
+      "size": 1000,
+      "emails": []
+    },
+    "maximum": {
+      "size": 10000,
+      "emails": []
+    },
+    "mixed": {
+      "size": 20,
+      "emails": [
+        "valid1@example.com",
+        "invalid-email",
+        "valid2@example.com",
+        "@missing-local.com",
+        "valid3@example.com",
+        "spam@domain.com",
+        "valid4@example.com",
+        "honeypot@example.com",
+        "valid5@example.com",
+        "user@",
+        "valid6@example.com",
+        "temp-mail@example.com",
+        "valid7@example.com",
+        "abuse@example.com",
+        "valid8@example.com",
+        "user@example",
+        "valid9@example.com",
+        "user+123+456@example.com"
+      ]
+    }
+  },
+  "webhooks": {
+    "valid": {
+      "url": "https://example.com/webhook",
+      "events": ["batch.completed", "batch.failed"],
+      "secret": "whsec_abc123"
+    },
+    "invalid": {
+      "url": "http://insecure.com",
+      "description": "HTTP instead of HTTPS"
+    },
+    "missingProtocol": {
+      "url": "example.com/webhook",
+      "description": "Missing protocol"
+    },
+    "malformed": {
+      "url": "https://-example.com",
+      "description": "Invalid domain"
+    }
+  },
+  "jobs": {
+    "pending": {
+      "jobId": "batch_550e8400-e29b-41d4-a716-446655440000",
+      "status": "pending",
+      "totalEmails": 100,
+      "processedEmails": 0
+    },
+    "processing": {
+      "jobId": "batch_550e8400-e29b-41d4-a716-446655440001",
+      "status": "processing",
+      "totalEmails": 100,
+      "processedEmails": 45
+    },
+    "completed": {
+      "jobId": "batch_550e8400-e29b-41d4-a716-446655440002",
+      "status": "completed",
+      "totalEmails": 100,
+      "processedEmails": 100,
+      "completedAt": "2024-01-04T10:30:00.000Z"
+    },
+    "failed": {
+      "jobId": "batch_550e8400-e29b-41d4-a716-446655440003",
+      "status": "failed",
+      "totalEmails": 100,
+      "processedEmails": 25,
+      "error": "API rate limit exceeded"
+    },
+    "cancelled": {
+      "jobId": "batch_550e8400-e29b-41d4-a716-446655440004",
+      "status": "cancelled",
+      "totalEmails": 100,
+      "processedEmails": 30,
+      "cancelledAt": "2024-01-04T10:30:00.000Z"
+    }
+  },
+  "apiKeys": {
+    "valid": {
+      "production": "sk_live_" + "a".repeat(32),
+      "testing": "sk_test_" + "b".repeat(32)
+    },
+    "invalid": [
+      {
+        "key": "invalid_key",
+        "description": "Invalid format"
+      },
+      {
+        "key": "sk_live_" + "a".repeat(31),
+        "description": "Too short"
+      },
+      {
+        "key": "sk_live_" + "a".repeat(33),
+        "description": "Too long"
+      },
+      {
+        "key": "api_live_" + "a".repeat(32),
+        "description": "Wrong prefix"
+      },
+      {
+        "key": "PROD_" + "a".repeat(32),
+        "description": "Wrong format"
+      }
+    ]
+  },
+  "errors": {
+    "rateLimit": {
+      "status": 429,
+      "error": "RateLimitError",
+      "message": "Rate limit exceeded"
+    },
+    "authentication": {
+      "status": 401,
+      "error": "AuthenticationError",
+      "message": "Invalid API key"
+    },
+    "notFound": {
+      "status": 404,
+      "error": "NotFoundError",
+      "message": "Resource not found"
+    },
+    "validation": {
+      "status": 400,
+      "error": "ValidationError",
+      "message": "Invalid input"
+    },
+    "serverError": {
+      "status": 500,
+      "error": "ServiceUnavailableError",
+      "message": "Internal server error"
+    },
+    "badGateway": {
+      "status": 502,
+      "error": "BadGatewayError",
+      "message": "Bad gateway"
+    },
+    "serviceUnavailable": {
+      "status": 503,
+      "error": "ServiceUnavailableError",
+      "message": "Service unavailable"
+    },
+    "gatewayTimeout": {
+      "status": 504,
+      "error": "GatewayTimeoutError",
+      "message": "Gateway timeout"
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "name": "Get Notified When Batch Validation Completes",
+  "description": "Receive instant notifications when your batch email validation finishes, with a summary of results and download links.",
+  "category": "Notifications",
+  "apps": ["mailsafepro", "slack", "email", "google_sheets"],
+  "trigger": {
+    "app": "mailsafepro",
+    "action": "batch_complete_webhook",
+    "description": "When a batch validation completes",
+    "input_mapping": {
+      "filter_status": "all",
+      "min_emails": 1,
+      "include_results_summary": true
+    }
+  },
+  "steps": [
+    {
+      "app": "slack",
+      "action": "send_channel_message",
+      "description": "Send completion notification to Slack",
+      "input_mapping": {
+        "channel": "#email-validation",
+        "message": "✅ Batch Validation Complete!\n\n📋 Batch: {{trigger.batch_name}}\n📊 Total Emails: {{trigger.total_emails}}\n✅ Valid: {{trigger.results_summary.valid}} ({{trigger.success_rate}}%)\n❌ Invalid: {{trigger.results_summary.invalid}} ({{trigger.invalid_rate}}%)\n⚠️ Risky: {{trigger.results_summary.risky}} ({{trigger.risk_rate}}%)\n⏱️ Processing Time: {{trigger.processing_time_seconds}}s\n\n📥 Download Results:\n• CSV: {{trigger.action_urls.download_csv}}\n• JSON: {{trigger.action_urls.download_json}}"
+      }
+    },
+    {
+      "type": "filter",
+      "condition": "{{trigger.results_summary.invalid}} greater than 0",
+      "description": "Only continue if there are invalid emails"
+    },
+    {
+      "app": "google_sheets",
+      "action": "create_spreadsheet_row",
+      "description": "Log batch results to tracking spreadsheet",
+      "input_mapping": {
+        "spreadsheet": "Email Validation Log",
+        "worksheet": "Batch History",
+        "data": {
+          "date": "{{trigger.completed_at}}",
+          "batch_name": "{{trigger.batch_name}}",
+          "total": "{{trigger.total_emails}}",
+          "valid": "{{trigger.results_summary.valid}}",
+          "invalid": "{{trigger.results_summary.invalid}}",
+          "risky": "{{trigger.results_summary.risky}}",
+          "success_rate": "{{trigger.success_rate}}"
+        }
+      }
+    }
+  ],
+  "use_cases": [
+    "Marketing teams tracking list quality",
+    "Operations teams monitoring validation jobs",
+    "Data teams maintaining audit logs"
+  ],
+  "estimated_time_savings": "1-2 hours per batch",
+  "roi_metrics": [
+    "Never miss a completed validation",
+    "Track list quality over time",
+    "Automate reporting workflows"
+  ]
+}

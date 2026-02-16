@@ -1,0 +1,53 @@
+{
+  "name": "Alert Team When High-Risk Email Detected",
+  "description": "Get instant notifications when spam traps or high-risk emails are detected. Protect your sender reputation.",
+  "category": "Security & Compliance",
+  "apps": ["mailsafepro", "slack", "email", "teams"],
+  "trigger": {
+    "app": "mailsafepro",
+    "action": "new_high_risk_email",
+    "description": "When a high-risk email or spam trap is detected",
+    "input_mapping": {
+      "risk_threshold": "0.7",
+      "spam_traps_only": false
+    }
+  },
+  "steps": [
+    {
+      "app": "slack",
+      "action": "send_channel_message",
+      "description": "Send alert to security channel",
+      "input_mapping": {
+        "channel": "#security-alerts",
+        "message": "🚨 High-Risk Email Detected!\n\nEmail: {{trigger.email}}\nRisk Score: {{trigger.risk_score}}\nRisk Category: {{trigger.risk_category}}\nSpam Trap: {{trigger.spam_trap_check.is_spam_trap}}\n\nAction Required: Review and add to suppression list if needed."
+      }
+    },
+    {
+      "type": "filter",
+      "condition": "{{trigger.spam_trap_check.is_spam_trap}} equals true",
+      "description": "Only auto-suppress confirmed spam traps"
+    },
+    {
+      "app": "mailsafepro",
+      "action": "add_to_suppression_list",
+      "description": "Automatically add spam trap to suppression list",
+      "input_mapping": {
+        "email": "{{trigger.email}}",
+        "reason": "spam_trap",
+        "notes": "Auto-suppressed by Zapier - Detected as {{trigger.spam_trap_check.trap_type}}",
+        "permanent": true
+      }
+    }
+  ],
+  "use_cases": [
+    "Email marketing teams protecting sender reputation",
+    "Security teams monitoring for threats",
+    "Compliance teams ensuring data quality"
+  ],
+  "estimated_time_savings": "5-10 hours per week",
+  "roi_metrics": [
+    "Prevent blacklisting",
+    "Protect sender reputation",
+    "Reduce spam complaints by 95%"
+  ]
+}
